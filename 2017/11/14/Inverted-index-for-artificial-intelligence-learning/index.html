@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,AI,Inverted Index," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="倒排索引倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。  反向索引数据结构是典型的搜索引擎检索算法重要的部分。 一个搜索引擎执行的目标就是优化查询的速度：找到某个单词在文档中出现的地方。以前，正向索引开发出来用来存储每个文档的单词的列">
+<meta name="keywords" content="Python,AI,Inverted Index">
+<meta property="og:type" content="article">
+<meta property="og:title" content="人工智能学习之倒排索引">
+<meta property="og:url" content="http://yoursite.com/2017/11/14/Inverted-index-for-artificial-intelligence-learning/index.html">
+<meta property="og:site_name" content="Docle&#39;s blog">
+<meta property="og:description" content="倒排索引倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。  反向索引数据结构是典型的搜索引擎检索算法重要的部分。 一个搜索引擎执行的目标就是优化查询的速度：找到某个单词在文档中出现的地方。以前，正向索引开发出来用来存储每个文档的单词的列">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-02T15:17:13.397Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="人工智能学习之倒排索引">
+<meta name="twitter:description" content="倒排索引倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。  反向索引数据结构是典型的搜索引擎检索算法重要的部分。 一个搜索引擎执行的目标就是优化查询的速度：找到某个单词在文档中出现的地方。以前，正向索引开发出来用来存储每个文档的单词的列">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/14/Inverted-index-for-artificial-intelligence-learning/"/>
+
+
+
+
+
+  <title>人工智能学习之倒排索引 | Docle's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Docle's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">--但行前路 无问西东--</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/14/Inverted-index-for-artificial-intelligence-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">人工智能学习之倒排索引</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-14T00:00:00+08:00">
+                2017-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index">
+                    <span itemprop="name">AI</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h2><p><strong>倒排索引</strong>（英语：Inverted index），也常被称为<strong>反向索引</strong>、<strong>置入档案</strong>或<strong>反向档案</strong>，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。</p>
+<ul>
+<li>反向索引数据结构是典型的搜索引擎检索算法重要的部分。</li>
+<li>一个<a href="https://zh.wikipedia.org/w/index.php?title=%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%89%A7%E8%A1%8C&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">搜索引擎执行</a>的目标就是<a href="https://zh.wikipedia.org/wiki/%E4%BC%98%E5%8C%96" target="_blank" rel="noopener">优化</a>查询的速度：找到某个单词在文档中出现的地方。以前，<a href="https://zh.wikipedia.org/w/index.php?title=%E6%AD%A3%E5%90%91%E7%B4%A2%E5%BC%95&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">正向索引</a>开发出来用来存储每个文档的单词的列表，接着掉头来开发了一种反向索引。 正向索引的查询往往满足每个文档有序频繁的<a href="https://zh.wikipedia.org/w/index.php?title=%E5%85%A8%E6%96%87%E6%9F%A5%E8%AF%A2&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">全文查询</a>和每个单词在<a href="https://zh.wikipedia.org/w/index.php?title=%E6%A0%A1%E9%AA%8C%E6%96%87%E6%A1%A3&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">校验文档</a>中的<a href="https://zh.wikipedia.org/wiki/%E9%A9%97%E8%AD%89" target="_blank" rel="noopener">验证</a>这样的查询。</li>
+<li>实际上，时间、<a href="https://zh.wikipedia.org/wiki/%E5%86%85%E5%AD%98" target="_blank" rel="noopener">内存</a>、<a href="https://zh.wikipedia.org/wiki/%E5%A4%84%E7%90%86%E5%99%A8" target="_blank" rel="noopener">处理器</a>等等资源的限制，技术上正向索引是不能实现的。</li>
+<li>为了替代正向索引的每个文档的单词列表，能列出每个查询的单词所有所在文档的列表的反向索引数据结构开发了出来。</li>
+<li>随着反向索引的创建，如今的查询能通过立即的单词标示迅速获取结果（经过<a href="https://zh.wikipedia.org/w/index.php?title=%E9%9A%8F%E6%9C%BA%E5%AD%98%E5%82%A8&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">随机存储</a>）。随机存储也通常被认为快于<a href="https://zh.wikipedia.org/w/index.php?title=%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">顺序存储</a>。</li>
+</ul>
+<p>（引自维基百科）</p>
+<a id="more"></a>
+<h2 id="索引构建过程"><a href="#索引构建过程" class="headerlink" title="索引构建过程"></a>索引构建过程</h2><ol>
+<li><p><strong>词条序列</strong></p>
+
+</li>
+<li><p><strong>排序</strong></p>
+
+</li>
+<li><p><strong>词典&amp;倒排记录表</strong></p>
+<ul>
+<li><p>某个词项在单篇文档中的多次出现会被合并。</p>
+</li>
+<li><p>拆分成词典和倒排记录表两部分。</p>
+</li>
+<li><p>每个词项出现的文档数目(doc.  frequency, DF)会被加入。</p>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ol>
+
+<h2 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h2><ul>
+<li>子任务1：建索引</li>
+<li>子任务2：布尔查询</li>
+<li>文本处理要求<ol>
+<li>不要求做词条变化如friends -&gt; friend等，直接用空格作为分割符。</li>
+<li>都转成小写。</li>
+</ol>
+</li>
+<li>要求<ul>
+<li>输入<ol>
+<li>给定的文档</li>
+<li>一个布尔查询Q（And Or 操作）</li>
+<li>支持连续输入查询</li>
+</ol>
+</li>
+<li>输出<ol>
+<li>倒排索引表（存成文件dict.index)</li>
+<li>从文件中读取索引用于查询</li>
+<li>Q的查询结果（界面输出文档名列表）</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="python实现"><a href="#python实现" class="headerlink" title="python实现"></a>python实现</h2><p><strong>create_inverse_index.py</strong></p>
+<p>创建索引表的文件，事实上在实现时并没有完全按照上面的方法构建索引表，利用python的 set 类可以把步骤合起来。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件列表</span></span><br><span class="line">documents = [<span class="string">'d1.txt'</span>,<span class="string">'d2.txt'</span>,<span class="string">'d3.txt'</span>,<span class="string">'d4.txt'</span>,<span class="string">'d5.txt'</span>,<span class="string">'d6.txt'</span>,<span class="string">'d7.txt'</span>,<span class="string">'d8.txt'</span>,<span class="string">'d9.txt'</span>,<span class="string">'d10.txt'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给每个文件编号：id</span></span><br><span class="line">document_map = dict(zip(range(len(documents)), documents))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读入文件建立倒排索引</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment">#  单词到对应的文章id</span></span><br><span class="line">    <span class="comment"># &#123;'word': [1, 2, 3]&#125;</span></span><br><span class="line">    index = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> id, document <span class="keyword">in</span> document_map.items():</span><br><span class="line">        <span class="comment"># 把文件内容读出存放到 article 中</span></span><br><span class="line">        document = <span class="string">'files/'</span> + document</span><br><span class="line">        f = open(document,encoding=<span class="string">'utf-8'</span>)</span><br><span class="line">        article = f.read()</span><br><span class="line">        f.close()</span><br><span class="line">        words = article.split()</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">            word = word.lower()</span><br><span class="line">            <span class="keyword">if</span> word <span class="keyword">in</span> index:</span><br><span class="line">                index[word].add(id)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                index[word] = set([id])</span><br><span class="line">    <span class="keyword">return</span> index</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把索引写入 dict.index</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_index_file</span><span class="params">(index)</span>:</span></span><br><span class="line">    f = open(<span class="string">'dict.index.txt'</span>,<span class="string">'w'</span>,encoding=<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="keyword">for</span> word,docIDS <span class="keyword">in</span> index.items():</span><br><span class="line">        indexing = word + <span class="string">'\t'</span> + str(len(docIDS)) + <span class="string">'\t'</span></span><br><span class="line">        <span class="keyword">for</span> docID <span class="keyword">in</span> docIDS:</span><br><span class="line">            indexing += (<span class="string">' '</span> + str(docID))</span><br><span class="line">        f.write(indexing+<span class="string">'\n'</span>)</span><br><span class="line">    f.close()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把文件 ID 与文件名对应表写入文件 doc_map.txt</span></span><br><span class="line"><span class="comment"># 为了方便读取直接以字典的形式写入文件</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_document_map</span><span class="params">()</span>:</span></span><br><span class="line">    f = open(<span class="string">'doc_map.txt'</span>,<span class="string">'w'</span>,encoding=<span class="string">'utf-8'</span>)</span><br><span class="line">    handler = json.dumps(document_map)</span><br><span class="line">    f.write(handler)</span><br><span class="line">    f.close()</span><br><span class="line">    print(<span class="string">'doc_map.txt 创建成功！'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    index = create_index()</span><br><span class="line">    write_index_file(index)</span><br><span class="line">    write_document_map()</span><br><span class="line">    print(<span class="string">'倒排索引表 dict.index 创建成功！'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p><strong>search.py</strong></p>
+<p>布尔查询的文件。需要注意的是其中的 search_index 方法，这里因为约定了输入查询的格式所以对于keywords的数量可以明确知道，因此使用下表的方法获得数据。事实上平时使用的检索（如百度）不会限制查询的词数（当然也不能太长了）而且各个词之间都是and布尔操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 考虑到查询操作需要多次执行，把 index 作为全局变量，否则 search_index() 需要传递</span></span><br><span class="line"><span class="comment"># index 参数, document_map 同</span></span><br><span class="line">index = &#123;&#125;</span><br><span class="line">document_map = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从文件中读取索引创建索引字典</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_index</span><span class="params">(file_name)</span>:</span></span><br><span class="line">    inverse_index = &#123;&#125;</span><br><span class="line">    f = open(file_name,<span class="string">'r'</span>)</span><br><span class="line">    line = f.readline().rstrip()</span><br><span class="line">    <span class="keyword">while</span> line:</span><br><span class="line">        line = re.split(<span class="string">r'\s+'</span>,line)</span><br><span class="line">        <span class="comment"># print(line)</span></span><br><span class="line">        inverse_index[line[<span class="number">0</span>]] = set()</span><br><span class="line">        <span class="keyword">for</span> id <span class="keyword">in</span> line[<span class="number">2</span>:]:</span><br><span class="line">            inverse_index[line[<span class="number">0</span>]].add(id)</span><br><span class="line">        line = f.readline().rstrip()</span><br><span class="line">    <span class="keyword">return</span> inverse_index</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从文件中读取 ID 表创建 document_map</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_map</span><span class="params">(file_name)</span>:</span></span><br><span class="line">    doc_map = &#123;&#125;</span><br><span class="line">    f = open(file_name,<span class="string">'r'</span>)</span><br><span class="line">    handler = f.read()</span><br><span class="line">    doc_map = json.loads(handler)</span><br><span class="line">    f.close()</span><br><span class="line">    <span class="keyword">return</span> doc_map</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在索引字典中搜索 keywords</span></span><br><span class="line"><span class="comment"># 因为输入查询的格式已经约定所以使用了下标的方法获得数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search_index</span><span class="params">(keywords)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(keywords) &gt; <span class="number">1</span>:</span><br><span class="line">        ids = index.get(keywords[<span class="number">0</span>],set())</span><br><span class="line">        <span class="keyword">if</span> keywords[<span class="number">1</span>] == <span class="string">'and'</span>:</span><br><span class="line">            ids = ids &amp; index.get(keywords[<span class="number">2</span>],set())</span><br><span class="line">        <span class="keyword">elif</span> keywords[<span class="number">1</span>] == <span class="string">'or'</span>:</span><br><span class="line">            ids = ids | index.get(keywords[<span class="number">2</span>],set())</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        ids = index.get(keywords[<span class="number">0</span>],set())</span><br><span class="line">    <span class="comment"># result = ''</span></span><br><span class="line">    <span class="comment"># for id in ids:</span></span><br><span class="line">    <span class="comment">#     result += (id+' ')</span></span><br><span class="line">    <span class="comment"># print(result)</span></span><br><span class="line">    print_result(ids)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出结果函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_result</span><span class="params">(ids)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(ids) == <span class="number">0</span>:</span><br><span class="line">         print(<span class="string">"sorry,can not find the message!"</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        result = <span class="string">''</span></span><br><span class="line">        <span class="keyword">for</span> id <span class="keyword">in</span> ids:</span><br><span class="line">            result += (document_map[id]+<span class="string">' '</span>)</span><br><span class="line">        print(result)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 从文件中读取索引创建索引字典用于查询</span></span><br><span class="line">    <span class="keyword">global</span> index </span><br><span class="line">    index = create_index(<span class="string">'dict.index.txt'</span>)</span><br><span class="line">    <span class="comment"># 读入 doc_map.txt 创建 document_map</span></span><br><span class="line">    <span class="keyword">global</span> document_map</span><br><span class="line">    document_map = create_map(<span class="string">'doc_map.txt'</span>)</span><br><span class="line">    <span class="comment"># 构造匹配规则</span></span><br><span class="line">    <span class="comment"># pattern = re.compile(r'^([0-9a-zA-Z\-\_]+)(\s+)?((and|or)(\s+)?([0-9a-zA-Z\_\-]+))?$')</span></span><br><span class="line">    pattern = re.compile(<span class="string">r'^(\S+)(\s+)?((and|or)(\s+)?(\S+))?$'</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        query = input(<span class="string">'请输入查询的内容：'</span>)</span><br><span class="line">        query = query.lower()</span><br><span class="line">        <span class="keyword">if</span> query == <span class="string">'exit'</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> re.match(pattern,query):</span><br><span class="line">            <span class="comment"># 切词</span></span><br><span class="line">            keywords = re.split(<span class="string">r'\s+'</span>,query)</span><br><span class="line">            <span class="keyword">if</span> keywords:</span><br><span class="line">                search_index(keywords)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">'输入格式不正确！'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h2 id="测试样例"><a href="#测试样例" class="headerlink" title="测试样例"></a>测试样例</h2><p>测试文档可以自己编写。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">请输入查询的内容：rose</span><br><span class="line">d1.txt </span><br><span class="line">请输入查询的内容：in</span><br><span class="line">d3.txt d8.txt d6.txt d7.txt d4.txt d1.txt d9.txt d2.txt d10.txt </span><br><span class="line">请输入查询的内容：rose and in</span><br><span class="line">d1.txt </span><br><span class="line">请输入查询的内容：rose or in</span><br><span class="line">d3.txt d8.txt d6.txt d7.txt d4.txt d1.txt d9.txt d2.txt d10.txt </span><br><span class="line">请输入查询的内容：asf</span><br><span class="line">sorry,can not find the message!</span><br><span class="line">请输入查询的内容：rose and</span><br><span class="line">输入格式不正确！</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/AI/" rel="tag"><i class="fa fa-tag"></i> AI</a>
+          
+            <a href="/tags/Inverted-Index/" rel="tag"><i class="fa fa-tag"></i> Inverted Index</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/11/Compile-and-run-the-Java-program-in-Sublime-Text-3/" rel="next" title="Mac下在Sublime Text 3中编译运行java程序">
+                <i class="fa fa-chevron-left"></i> Mac下在Sublime Text 3中编译运行java程序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/15/regular-expression/" rel="prev" title="转一篇正则表达式大全">
+                转一篇正则表达式大全 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/123.png"
+                alt="Docle" />
+            
+              <p class="site-author-name" itemprop="name">Docle</p>
+              <p class="site-description motion-element" itemprop="description">岁月曲折 我将忠诚</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Docle" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/Docle7" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://limbowandering.github.io" title="火山灿灿" target="_blank">火山灿灿</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.ibilidi.cn/" title="南溪" target="_blank">南溪</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://diygod.me" title="DIYgod" target="_blank">DIYgod</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#倒排索引"><span class="nav-number">1.</span> <span class="nav-text">倒排索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引构建过程"><span class="nav-number">2.</span> <span class="nav-text">索引构建过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务"><span class="nav-number">3.</span> <span class="nav-text">任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python实现"><span class="nav-number">4.</span> <span class="nav-text">python实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试样例"><span class="nav-number">5.</span> <span class="nav-text">测试样例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Docle</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

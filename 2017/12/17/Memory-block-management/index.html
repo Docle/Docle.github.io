@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="C++," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="实验目的体会可变分区内存管理方案，掌握此方案的内存分配过程、内存回收过程和紧凑算法的实现。 实验内容编制一个程序模拟实现可变分区内存管理。实验时，假设系统内存容量为 1000KB 。分配时使用 malloc(pid, length) 函数实现，作业释放内存时使用 mfree(handle)函数实现，内存情况输出用 mlist()函数实现。">
+<meta name="keywords" content="C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++模拟实现可变内存分区管理">
+<meta property="og:url" content="http://yoursite.com/2017/12/17/Memory-block-management/index.html">
+<meta property="og:site_name" content="Docle&#39;s blog">
+<meta property="og:description" content="实验目的体会可变分区内存管理方案，掌握此方案的内存分配过程、内存回收过程和紧凑算法的实现。 实验内容编制一个程序模拟实现可变分区内存管理。实验时，假设系统内存容量为 1000KB 。分配时使用 malloc(pid, length) 函数实现，作业释放内存时使用 mfree(handle)函数实现，内存情况输出用 mlist()函数实现。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-10T04:44:53.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++模拟实现可变内存分区管理">
+<meta name="twitter:description" content="实验目的体会可变分区内存管理方案，掌握此方案的内存分配过程、内存回收过程和紧凑算法的实现。 实验内容编制一个程序模拟实现可变分区内存管理。实验时，假设系统内存容量为 1000KB 。分配时使用 malloc(pid, length) 函数实现，作业释放内存时使用 mfree(handle)函数实现，内存情况输出用 mlist()函数实现。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/17/Memory-block-management/"/>
+
+
+
+
+
+  <title>C++模拟实现可变内存分区管理 | Docle's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Docle's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">--但行前路 无问西东--</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/17/Memory-block-management/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C++模拟实现可变内存分区管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-17T00:00:00+08:00">
+                2017-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Other/" itemprop="url" rel="index">
+                    <span itemprop="name">Other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h2><p>体会可变分区内存管理方案，掌握此方案的内存分配过程、内存回收过程和紧凑算法的实现。</p>
+<h2 id="实验内容"><a href="#实验内容" class="headerlink" title="实验内容"></a>实验内容</h2><p>编制一个程序模拟实现可变分区内存管理。实验时，假设系统内存容量为 1000KB 。分配时使用 malloc(pid, length) 函数实现，作业释放内存时使用 mfree(handle)函数实现，内存情况输出用 mlist()函数实现。</p>
+<a id="more"></a>
+<h3 id="编写主界面"><a href="#编写主界面" class="headerlink" title="编写主界面"></a>编写主界面</h3><p>编写主界面，界面上有三个选项：分配内存、回收内存、查看内存。选择分配内存时，要求输入作业的进程号和作业长度，然后使用 malloc 函数分配内存，并报告内存分配结果。回收内存时要求输入进程号，使用 mfree 函数实现回收。查看内存时，使用 mlist 函数实现输出内存使用情况和空闲情况。</p>
+<h3 id="编写-malloc-pid-length-函数"><a href="#编写-malloc-pid-length-函数" class="headerlink" title="编写 malloc(pid, length) 函数"></a>编写 malloc(pid, length) 函数</h3><p>编写 malloc(pid, length)函数，实现进程 pid 申请 length KB 内存，要求程序判断是否能分配，如果能分配，要把分配内存的首地址 handle 输出到屏幕上。不能分配则输出字符串“NULL”。要考虑不能简单分配时，是否符合紧凑的条件，如符合则采用紧凑技术。然后再分配。分配时可在最佳适应算法、最差适应算法和首次适应算法中任选其一。</p>
+<h3 id="编写-mfree-handle-函数"><a href="#编写-mfree-handle-函数" class="headerlink" title="编写 mfree(handle) 函数"></a>编写 mfree(handle) 函数</h3><p>编写mfree(handle)函数，释放首地址为handle 的内存块。释放成功返回Success，否则返回 Failure。</p>
+<h3 id="编写-mlist-函数"><a href="#编写-mlist-函数" class="headerlink" title="编写 mlist() 函数"></a>编写 mlist() 函数</h3><p>编写 mlist()函数，要求输出内存使用情况和空闲情况。输出的格式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ID	Address	Length	Process</span><br></pre></td></tr></table></figure>
+<p>ID                内存分区号</p>
+<p>Address     该分区的首地址</p>
+<p>Length        分区长度</p>
+<p>Process       如果使用，则为使用的进程号，否则为NULL</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>mfree(handle) 函数应该考虑 4 种情况：</p>
+<ol>
+<li>要释放的内存块前后内存块都是已分配内存块；</li>
+<li>要释放的内存块前是空闲内存块；</li>
+<li>要释放的内存块前是空闲内存块；</li>
+<li>要释放的内存块前后都是空闲内存块；</li>
+</ol>
+<p>在这里实现的时候释放时不考虑前后内存块的情况，直接标为空闲状态，合并留待需要紧凑时再实现。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> memory = <span class="number">1000</span>;  <span class="comment">// 内存容量</span></span><br><span class="line"><span class="keyword">int</span> mid = <span class="number">0</span>;        <span class="comment">// 内存块数量</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FreeBlock</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;         <span class="comment">// 内存分区号</span></span><br><span class="line">    <span class="keyword">int</span> address;    <span class="comment">// 该分区的首地址</span></span><br><span class="line">    <span class="keyword">int</span> length;     <span class="comment">// 分区长度</span></span><br><span class="line">    FreeBlock(<span class="keyword">int</span> id, <span class="keyword">int</span> address, <span class="keyword">int</span> length) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;id = id;</span><br><span class="line">        <span class="keyword">this</span>-&gt;address = address;</span><br><span class="line">        <span class="keyword">this</span>-&gt;length = length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">AllocatedBlock</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;         <span class="comment">// 内存分区号</span></span><br><span class="line">    <span class="keyword">int</span> address;    <span class="comment">// 该分区的首地址</span></span><br><span class="line">    <span class="keyword">int</span> pid;        <span class="comment">// 进程 ID</span></span><br><span class="line">    <span class="keyword">int</span> length;     <span class="comment">// 分区长度</span></span><br><span class="line">    AllocatedBlock(<span class="keyword">int</span> id, <span class="keyword">int</span> address, <span class="keyword">int</span> pid, <span class="keyword">int</span> length) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;id = id;</span><br><span class="line">        <span class="keyword">this</span>-&gt;address = address;</span><br><span class="line">        <span class="keyword">this</span>-&gt;pid = pid;</span><br><span class="line">        <span class="keyword">this</span>-&gt;length = length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;FreeBlock*&gt; free_blocks;</span><br><span class="line"><span class="built_in">vector</span>&lt;AllocatedBlock*&gt; allocated_blocks;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">malloc</span><span class="params">(<span class="keyword">int</span> pid, <span class="keyword">int</span> length)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mlist</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mfree</span><span class="params">(<span class="keyword">int</span> address)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compact</span><span class="params">(<span class="keyword">int</span> pid, <span class="keyword">int</span> length)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> action;</span><br><span class="line">    <span class="keyword">int</span> pid, length, address;</span><br><span class="line"></span><br><span class="line">    FreeBlock *free_block = <span class="keyword">new</span> FreeBlock(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1000</span>);     <span class="comment">// 初始化空闲分区</span></span><br><span class="line">    free_blocks.push_back(free_block);</span><br><span class="line">    <span class="keyword">do</span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Do something: "</span>);</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; action;</span><br><span class="line">        <span class="keyword">if</span>(action==<span class="string">"malloc"</span>)&#123;</span><br><span class="line">            <span class="built_in">cin</span> &gt;&gt; pid &gt;&gt; length;</span><br><span class="line">            <span class="built_in">malloc</span>(pid,length);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(action==<span class="string">"mfree"</span>)&#123;</span><br><span class="line">            <span class="built_in">cin</span> &gt;&gt; address;</span><br><span class="line">            mfree(address);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(action==<span class="string">"mlist"</span>)&#123;</span><br><span class="line">            mlist();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(action==<span class="string">"exit"</span>)&#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"Valid Input:\n  malloc pid length\n  mfree handle\n  mlist\n"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试用</span></span><br><span class="line">    <span class="comment">// malloc(12, 200);</span></span><br><span class="line">    <span class="comment">// malloc(242, 200);</span></span><br><span class="line">    <span class="comment">// malloc(124, 100);</span></span><br><span class="line">    <span class="comment">// malloc(24, 200);</span></span><br><span class="line">    <span class="comment">// malloc(41, 100);</span></span><br><span class="line">    <span class="comment">// malloc(432, 50);</span></span><br><span class="line">    <span class="comment">// malloc(34, 50);</span></span><br><span class="line">    <span class="comment">// malloc(235, 50);</span></span><br><span class="line">    <span class="comment">// mlist();</span></span><br><span class="line">    <span class="comment">// mfree(200);</span></span><br><span class="line">    <span class="comment">// mfree(700);</span></span><br><span class="line">    <span class="comment">// mlist();</span></span><br><span class="line">    <span class="comment">// malloc(32, 300);</span></span><br><span class="line">    <span class="comment">// mlist();</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用首次适应算法分配内存</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">malloc</span><span class="params">(<span class="keyword">int</span> pid, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (length&gt;memory) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"failed!\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">1</span>;     <span class="comment">// 标志是否需要使用紧凑算法</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = free_blocks.begin(); it != free_blocks.end(); it++) &#123;</span><br><span class="line">        FreeBlock *mb = *it;</span><br><span class="line">        <span class="keyword">if</span> (mb-&gt;length &gt; length) &#123;</span><br><span class="line">            AllocatedBlock *allocated_block = <span class="keyword">new</span> AllocatedBlock(mb-&gt;id, mb-&gt;address, pid, length);</span><br><span class="line">            allocated_blocks.push_back(allocated_block);</span><br><span class="line">            memory -= length;</span><br><span class="line">            mb-&gt;id = ++mid;</span><br><span class="line">            mb-&gt;address += length;</span><br><span class="line">            mb-&gt;length -= length;</span><br><span class="line">            flag = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (mb-&gt;length == length) &#123;</span><br><span class="line">            AllocatedBlock *allocated_block = <span class="keyword">new</span> AllocatedBlock(mb-&gt;id, mb-&gt;address, pid, length);</span><br><span class="line">            allocated_blocks.push_back(allocated_block);</span><br><span class="line">            it = free_blocks.erase(it);</span><br><span class="line">            flag = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">        compact(pid, length);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 紧凑算法</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">compact</span><span class="params">(<span class="keyword">int</span> pid, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">    FreeBlock *fb1 = *free_blocks.begin();</span><br><span class="line">    FreeBlock *mb = *(free_blocks.begin() + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> min = fb1-&gt;address - mb-&gt;address;</span><br><span class="line">    <span class="keyword">auto</span> a = free_blocks.begin() + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = free_blocks.begin() + <span class="number">1</span>; it != free_blocks.end(); it++) &#123;</span><br><span class="line">        FreeBlock *mb = *it;</span><br><span class="line">        <span class="keyword">if</span> ((fb1-&gt;address - mb-&gt;address) &lt; min) &#123;</span><br><span class="line">            <span class="comment">//*fb2 = *mb;</span></span><br><span class="line">            a = it;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    FreeBlock *fb2 = *a;</span><br><span class="line">    <span class="keyword">int</span> offset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = allocated_blocks.begin(); it != allocated_blocks.end(); it++) &#123;</span><br><span class="line">        AllocatedBlock *mb = *it;</span><br><span class="line">        <span class="keyword">if</span> (mb-&gt;address &gt; fb2-&gt;address) &#123;</span><br><span class="line">            mb-&gt;id--;</span><br><span class="line">            mb-&gt;address -= fb2-&gt;length;</span><br><span class="line">            offset += mb-&gt;length;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    fb1-&gt;id = --mid;</span><br><span class="line">    fb1-&gt;address = fb2-&gt;address + offset;</span><br><span class="line">    fb1-&gt;length = fb1-&gt;length + fb2-&gt;length;</span><br><span class="line">    a = free_blocks.erase(a);</span><br><span class="line">    <span class="built_in">malloc</span>(pid, length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mlist</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"ID\tAddress\tLength\tProcess"</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = allocated_blocks.begin(); it != allocated_blocks.end(); it++) &#123;</span><br><span class="line">        AllocatedBlock *mb = *it;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\t%d\t%d\t%d\n"</span>, mb-&gt;id, mb-&gt;address, mb-&gt;length, mb-&gt;pid);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = free_blocks.begin(); it != free_blocks.end(); it++) &#123;</span><br><span class="line">        FreeBlock *mb = *it;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\t%d\t%d\t%s\n"</span>, mb-&gt;id, mb-&gt;address, mb-&gt;length, <span class="string">"NULL"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mfree</span><span class="params">(<span class="keyword">int</span> address)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> dirty = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = free_blocks.begin(); it != free_blocks.end(); it++) &#123;</span><br><span class="line">        FreeBlock *mb = *it;</span><br><span class="line">        <span class="keyword">if</span> (mb-&gt;address == address) &#123;</span><br><span class="line">            dirty = <span class="literal">false</span>;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; <span class="string">"This block has been freed before!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = allocated_blocks.begin(); it != allocated_blocks.end(); it++) &#123;</span><br><span class="line">        AllocatedBlock *mb = *it;</span><br><span class="line">        <span class="keyword">if</span> (mb-&gt;address == address) &#123;</span><br><span class="line">            dirty = <span class="literal">false</span>;</span><br><span class="line">            FreeBlock *free_block = <span class="keyword">new</span> FreeBlock(mb-&gt;id, mb-&gt;address, mb-&gt;length);</span><br><span class="line">            free_blocks.push_back(free_block);</span><br><span class="line">            memory += mb-&gt;length;</span><br><span class="line">            it = allocated_blocks.erase(it);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (dirty) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Could not found this address!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"><i class="fa fa-tag"></i> C++</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/13/Bitextor/" rel="next" title="从零开始的Centos安装使用Bitextor">
+                <i class="fa fa-chevron-left"></i> 从零开始的Centos安装使用Bitextor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/25/Assembly-instruction/" rel="prev" title="复习用汇编指令总结">
+                复习用汇编指令总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/123.png"
+                alt="Docle" />
+            
+              <p class="site-author-name" itemprop="name">Docle</p>
+              <p class="site-description motion-element" itemprop="description">岁月曲折 我将忠诚</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Docle" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/Docle7" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://limbowandering.github.io" title="火山灿灿" target="_blank">火山灿灿</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.ibilidi.cn/" title="南溪" target="_blank">南溪</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://diygod.me" title="DIYgod" target="_blank">DIYgod</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实验目的"><span class="nav-number">1.</span> <span class="nav-text">实验目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验内容"><span class="nav-number">2.</span> <span class="nav-text">实验内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写主界面"><span class="nav-number">2.1.</span> <span class="nav-text">编写主界面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写-malloc-pid-length-函数"><span class="nav-number">2.2.</span> <span class="nav-text">编写 malloc(pid, length) 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写-mfree-handle-函数"><span class="nav-number">2.3.</span> <span class="nav-text">编写 mfree(handle) 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写-mlist-函数"><span class="nav-number">2.4.</span> <span class="nav-text">编写 mlist() 函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Docle</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

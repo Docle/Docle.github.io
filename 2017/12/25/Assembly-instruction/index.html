@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Assembly Language," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="因为汇编指令实在不少，这篇文章是留作复习用，不适合预习，其中的指令也并不全面，针对考试要求做了取舍，记下一些比较容易忘记的细节问题。 数据传送指令 普通传送指令 MOV MOV    DEST , SRC  交换指令 XCHG XCHG    OPRAD , OPRAD2">
+<meta name="keywords" content="Assembly Language">
+<meta property="og:type" content="article">
+<meta property="og:title" content="复习用汇编指令总结">
+<meta property="og:url" content="http://yoursite.com/2017/12/25/Assembly-instruction/index.html">
+<meta property="og:site_name" content="Docle&#39;s blog">
+<meta property="og:description" content="因为汇编指令实在不少，这篇文章是留作复习用，不适合预习，其中的指令也并不全面，针对考试要求做了取舍，记下一些比较容易忘记的细节问题。 数据传送指令 普通传送指令 MOV MOV    DEST , SRC  交换指令 XCHG XCHG    OPRAD , OPRAD2">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-02T15:05:26.027Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="复习用汇编指令总结">
+<meta name="twitter:description" content="因为汇编指令实在不少，这篇文章是留作复习用，不适合预习，其中的指令也并不全面，针对考试要求做了取舍，记下一些比较容易忘记的细节问题。 数据传送指令 普通传送指令 MOV MOV    DEST , SRC  交换指令 XCHG XCHG    OPRAD , OPRAD2">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/25/Assembly-instruction/"/>
+
+
+
+
+
+  <title>复习用汇编指令总结 | Docle's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Docle's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">--但行前路 无问西东--</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Assembly-instruction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">复习用汇编指令总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-25T00:00:00+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Other/" itemprop="url" rel="index">
+                    <span itemprop="name">Other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为汇编指令实在不少，这篇文章是留作复习用，不适合预习，其中的指令也并不全面，针对考试要求做了取舍，记下一些比较容易忘记的细节问题。</p>
+<h2 id="数据传送指令"><a href="#数据传送指令" class="headerlink" title="数据传送指令"></a>数据传送指令</h2><ol>
+<li><p>普通传送指令 MOV</p>
+<p><strong>MOV    DEST , SRC</strong></p>
+</li>
+<li><p>交换指令 XCHG</p>
+<p><strong>XCHG    OPRAD , OPRAD2</strong></p>
+<a id="more"></a>
+</li>
+<li><p>进栈和出栈指令 PUSH 和 POP</p>
+<p><strong>PUSH    SRC</strong></p>
+<p>*源操作数SRC不可以是8位通用寄存器。</p>
+<p><strong>POP    DEST</strong></p>
+<p>*出栈指令的操作数不能是立即数，也不能是代码段寄存器 CS。</p>
+</li>
+<li><p>符号扩展指令 CBW、CWD、CDQ 和 CWDE</p>
+</li>
+<li><p>扩展传送指令 MOVSX 和 MOVZX</p>
+</li>
+</ol>
+<h2 id="算数运算指令"><a href="#算数运算指令" class="headerlink" title="算数运算指令"></a>算数运算指令</h2><ol>
+<li><p>加运算指令 ADD 和带进位加指令 ADC</p>
+<p><strong>ADD    DEST , SRC</strong></p>
+<p><strong>ADC    DEST , SRC</strong></p>
+<p>ADC 指令除了完成两个操作数相加，还要把进位标志 CF 的当前值加上。</p>
+</li>
+<li><p>减运算指令 SUB 和带借位减指令 SBB</p>
+<p><strong>SUB    DEST , SRC</strong></p>
+<p><strong>SBB        DEST , SRC</strong></p>
+<p>SBB 指令在进行两个操作数相减的同时，还要减去借位标志 CF 的当前值。</p>
+</li>
+<li><p>无符号数乘运算指令 MUL 和有符号数乘法指令 IMUL</p>
+<p><strong>MUL    OPRD</strong></p>
+<p>*指令看似只有一个操作数 OPRD，实际上，另一个操作数是隐含的，位于寄存器 AL、AX 或者 EAX 中（这取决于操作数 OPRD 的尺寸）。</p>
+<p>IMUL 有 3 种格式：</p>
+<p><strong>IMUL    OPRD</strong></p>
+<p><strong>IMUL    DEST , SRC</strong></p>
+<p><strong>IMUL    DEST , SRC1 , SRC2</strong></p>
+<p>*单操作数形式与 MUL 相同。</p>
+</li>
+<li><p>无符号数除法指令 DIV 和有符号数除法指令 IDIV</p>
+<p><strong>DIV    OPRD</strong></p>
+<p>*另一个操作数（作为被除数）是隐含的，位于寄存器 AX、寄存器对 DX：AX 或者寄存器对 EDX：EAX 中（DX 含有被除数的高16位，或者 EDX 含有被除数的高32位）。如果 OPRD 是字节操作数，则把 AX 中的无符号数除以 OPRD，所得商送到 AL 中，余数送到 AH 中；如果 OPRD 是字操作数，则把寄存器对 DX：AX 中的无符号数除以 OPRD，所得商送到 AX，余数送到 DX 中。如果 OPRD 是双字操作数，则把寄存器对 EDX：EAX 中的无符号数除以 OPRD，所得商送到 EAX，余数送到 EDX 中。</p>
+<p><strong>IDIV    OPRD</strong></p>
+</li>
+<li><p>加1运算指令 INC 和减1运算指令 DEC</p>
+<p><strong>INC    DEST</strong></p>
+<p><strong>DEC    DEST</strong></p>
+</li>
+<li><p>取负数（取补）指令 NEC 和比较指令 CMP</p>
+<p><strong>NEC    OPRD</strong></p>
+<p><strong>CMP    DEST , SRC</strong></p>
+<p>*CMP 指令根据DEST-SRC的差来影响标志寄存器中的各个状态标志，但不把作为结果的差送到目的操作数 DEST。</p>
+</li>
+</ol>
+<h2 id="逻辑运算指令"><a href="#逻辑运算指令" class="headerlink" title="逻辑运算指令"></a>逻辑运算指令</h2><ol>
+<li><p>逻辑与运算指令 AND</p>
+<p><strong>AND    DEST , SRC</strong></p>
+</li>
+<li><p>逻辑或运算指令 OR</p>
+<p><strong>OR        DEST , SRC</strong></p>
+</li>
+<li><p>逻辑异或运算指令 XOR</p>
+<p><strong>XOR    DEST , SRC</strong></p>
+</li>
+<li><p>逻辑否运算指令 NOT</p>
+<p><strong>NOT    OPRD</strong></p>
+</li>
+<li><p>按位测试指令 TEST</p>
+<p><strong>TEST    DEST , SRC</strong></p>
+<p>这条指令和 AND 指令类似，也是把两个操作数进行按位“与”，但结果不送到目的操作数 DEST，仅仅影响状态标志。该指令执行以后，标志 ZF、PF和SF反映运算结果，标志CF和OF被清为0。</p>
+</li>
+</ol>
+<h2 id="移位指令"><a href="#移位指令" class="headerlink" title="移位指令"></a>移位指令</h2><ol>
+<li><p>算术右移指令 SAR，逻辑右移指令 SHR，算术或逻辑左移指令 SAL/SHL</p>
+<p><strong>SAL    OPRD , count</strong></p>
+<p><strong>SHR    OPRD , count</strong></p>
+<p><strong>SAL    OPRD , count</strong></p>
+<p><strong>SHL    OPRD , count</strong></p>
+</li>
+<li><p>循环右移指令 ROR，循环左移指令 ROL</p>
+<p><strong>ROR    OPRD , count</strong></p>
+<p><strong>ROL    OPRD , count</strong></p>
+</li>
+<li><p>带进位右移指令 RCR，带进位左移指令 RCL</p>
+<p><strong>RCR    OPRD , count</strong></p>
+<p><strong>RCL    OPRD , count</strong></p>
+</li>
+<li><p>双精度左移指令 SHLD 和双精度右移指令 SHRD</p>
+<p><strong>SHLD    OPRD1 , OPRD2 , count</strong></p>
+<p><strong>SHRD    OPRD1 , OPRD2 , count</strong></p>
+</li>
+</ol>
+<h2 id="转移指令"><a href="#转移指令" class="headerlink" title="转移指令"></a>转移指令</h2><ol>
+<li><p>条件转移指令 Jcc（ cc 表示各种条件）</p>
+</li>
+<li><p>无条件转移指令 JMP</p>
+</li>
+<li><p>循环指令</p>
+<ul>
+<li><p>计数循环指令 LOOP</p>
+<p><strong>LOOP    LABEL</strong></p>
+<p>这条指令使得寄存器 ECX 的值减 1，如果结果不等于 0，则转移到标号 LABEL处，否则执行 LOOP 指令后的指令。</p>
+</li>
+<li><p>等于/全零循环指令 LOOPE/LOOPZ</p>
+<p><strong>LOOPE    LABEL</strong></p>
+<p><strong>LOOPZ    LABEL</strong></p>
+<p>这条指令使得寄存器 ECX 的值减 1，如果结果不等于 0，并且零标志 ZF 等于 1（表示相等），那么就转移到标号 LABEL 处，否则顺序执行。注意指令本身实施的寄存器 ECX减 1操作不影响标志。</p>
+</li>
+<li><p>不等于/非零循环指令 LOOPNE/LOOPNZ</p>
+<p><strong>LOOPNE    LABEL</strong></p>
+<p><strong>LOOPNZ    LABEL</strong></p>
+<p>这条指令使得寄存器 ECX 的值减 1，如果结果不等于 0，并且零标志 ZF 等于 0（表示不相等），那么就转移到标号 LABEL 处，否则顺序执行。注意指令本身实施的寄存器 ECX减 1操作不影响标志。</p>
+</li>
+</ul>
+</li>
+<li><p>过程调用指令 CALL</p>
+</li>
+<li><p>过程放回指令 RET</p>
+</li>
+</ol>
+<h2 id="字符串操作指令"><a href="#字符串操作指令" class="headerlink" title="字符串操作指令"></a>字符串操作指令</h2><p>在字符串操作指令中，涉及源操作数（串）时，又变址寄存器 ESI 指向源串；涉及目的操作数（串）时，由变址寄存器 EDI 指向目的串。</p>
+<p>字符串操作的方向由标志寄存器中的方向标志 DF 控制。当方向标志 DF 复位（为 0）时，操作方向是由低向高，，当方向标志 DF 置位（为 1）时，操作方向是由高向低。</p>
+<ol>
+<li>装入字符指令 LODSB、LODSW 和 LODSD</li>
+<li>存储字符指令 STOSB、STOSW 和 STOSD</li>
+<li>传送字符指令 MOVSB、MOVSW 和 MOVSD</li>
+<li>扫描字符指令 SCASB、SCASW 和 SCASD</li>
+<li>比较字符指令 CMPSB、CMPSW 和CMPSD</li>
+</ol>
+<p>为了便于字符串操作，上述字符串操作指令还可以带相应的重复前缀 REP、REPE/REPZ 和 REPNE/REPNZ。</p>
+<h2 id="其他指令"><a href="#其他指令" class="headerlink" title="其他指令"></a>其他指令</h2><ol>
+<li><p>取有效地址指令 LEA</p>
+<p><strong>LEA    REC , OPRD</strong></p>
+<p>源操作数 OPRD 必须是一个存储器操作数，目的操作数 REG 必须是一个16位或者32位的通用寄存器。</p>
+</li>
+<li><p>设置进位标志指令 STC、清进位标志指令 CLC 和取反进位标志指令 CMC</p>
+</li>
+<li><p>设置方向标志指令 STD、清方向标志指令 CLD</p>
+</li>
+<li><p>获取状态标志操作指令 LAHF 和设置状态标志操作指令 SAHF</p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Assembly-Language/" rel="tag"><i class="fa fa-tag"></i> Assembly Language</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/17/Memory-block-management/" rel="next" title="C++模拟实现可变内存分区管理">
+                <i class="fa fa-chevron-left"></i> C++模拟实现可变内存分区管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/02/Something-about-hexo/" rel="prev" title="Hexo的那些小事">
+                Hexo的那些小事 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/123.png"
+                alt="Docle" />
+            
+              <p class="site-author-name" itemprop="name">Docle</p>
+              <p class="site-description motion-element" itemprop="description">岁月曲折 我将忠诚</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Docle" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/Docle7" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://limbowandering.github.io" title="火山灿灿" target="_blank">火山灿灿</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.ibilidi.cn/" title="南溪" target="_blank">南溪</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://diygod.me" title="DIYgod" target="_blank">DIYgod</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据传送指令"><span class="nav-number">1.</span> <span class="nav-text">数据传送指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算数运算指令"><span class="nav-number">2.</span> <span class="nav-text">算数运算指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑运算指令"><span class="nav-number">3.</span> <span class="nav-text">逻辑运算指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移位指令"><span class="nav-number">4.</span> <span class="nav-text">移位指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转移指令"><span class="nav-number">5.</span> <span class="nav-text">转移指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串操作指令"><span class="nav-number">6.</span> <span class="nav-text">字符串操作指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他指令"><span class="nav-number">7.</span> <span class="nav-text">其他指令</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Docle</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

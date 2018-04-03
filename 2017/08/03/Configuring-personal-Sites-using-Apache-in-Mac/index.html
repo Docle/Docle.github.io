@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Mac," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近在折腾学习HTML5游戏制作，为了测试游戏就需要在本地运行，于是把文件放在 /Libraray/WebServer/Ducuments/ 下，对应的网址：http://localhost/ ，但是慢慢的有些问题就出现了，比如每次到达目录麻烦，懒癌晚期表示不能忍啊啊啊，还有就是读写权限的问题。然后网上搜索得知Mac OS X 是有两个目录可以直接运行web程序的。">
+<meta name="keywords" content="Mac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mac下利用apache配置个人站点">
+<meta property="og:url" content="http://yoursite.com/2017/08/03/Configuring-personal-Sites-using-Apache-in-Mac/index.html">
+<meta property="og:site_name" content="Docle&#39;s blog">
+<meta property="og:description" content="最近在折腾学习HTML5游戏制作，为了测试游戏就需要在本地运行，于是把文件放在 /Libraray/WebServer/Ducuments/ 下，对应的网址：http://localhost/ ，但是慢慢的有些问题就出现了，比如每次到达目录麻烦，懒癌晚期表示不能忍啊啊啊，还有就是读写权限的问题。然后网上搜索得知Mac OS X 是有两个目录可以直接运行web程序的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-02T15:13:22.371Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mac下利用apache配置个人站点">
+<meta name="twitter:description" content="最近在折腾学习HTML5游戏制作，为了测试游戏就需要在本地运行，于是把文件放在 /Libraray/WebServer/Ducuments/ 下，对应的网址：http://localhost/ ，但是慢慢的有些问题就出现了，比如每次到达目录麻烦，懒癌晚期表示不能忍啊啊啊，还有就是读写权限的问题。然后网上搜索得知Mac OS X 是有两个目录可以直接运行web程序的。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/03/Configuring-personal-Sites-using-Apache-in-Mac/"/>
+
+
+
+
+
+  <title>Mac下利用apache配置个人站点 | Docle's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Docle's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">--但行前路 无问西东--</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/03/Configuring-personal-Sites-using-Apache-in-Mac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mac下利用apache配置个人站点</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-03T00:00:00+08:00">
+                2017-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mac/" itemprop="url" rel="index">
+                    <span itemprop="name">Mac</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在折腾学习HTML5游戏制作，为了测试游戏就需要在本地运行，于是把文件放在 /Libraray/WebServer/Ducuments/ 下，对应的网址：<a href="http://localhost/" target="_blank" rel="noopener">http://localhost/</a> ，但是慢慢的有些问题就出现了，比如每次到达目录麻烦，懒癌晚期表示不能忍啊啊啊，还有就是读写权限的问题。然后网上搜索得知Mac OS X 是有两个目录可以直接运行web程序的。</p>
+<a id="more"></a>
+<ol>
+<li><p>一个是系统级的根目录：/Libraray/WebServer/Ducuments</p>
+<p>对应网址： <a href="http://localhost/" target="_blank" rel="noopener">http://localhost/</a></p>
+</li>
+<li><p>另一个是用户级的根目录：～/Sites</p>
+<p>对应网址：<a href="http://localhost/~user/" target="_blank" rel="noopener">http://localhost/~user/</a></p>
+<p>（*注意，user是你的用户名，下同）</p>
+</li>
+</ol>
+<h2 id="创建Sites目录"><a href="#创建Sites目录" class="headerlink" title="创建Sites目录"></a>创建Sites目录</h2><p>在用户主页目录下是没有这个Sites目录的，需要我们自己创建，打开terminal，在根目录～下运行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir Sites</span><br></pre></td></tr></table></figure>
+<p>打开Finder会发现Sites跟一般的文件夹不一样，上面有一个Safari一样的图标呢！至于为什么目录名是Sites？？查看/etc/apache2/extra/httpd-userdir.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># Settings for user home directories</span><br><span class="line">#</span><br><span class="line"># Required module: mod_authz_core, mod_authz_host, mod_userdir</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line"># UserDir: The name of the directory that is appended onto a user&apos;s home</span><br><span class="line"># directory if a ~user request is received.  Note that you must also set</span><br><span class="line"># the default access control for these directories, as in the example below.</span><br><span class="line">#</span><br><span class="line">UserDir Sites</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line"># Control access to UserDir directories.  The following is an example</span><br><span class="line"># for a site where these directories are restricted to read-only.</span><br><span class="line">#</span><br><span class="line">Include /private/etc/apache2/users/*.conf</span><br><span class="line">&lt;IfModule bonjour_module&gt;</span><br><span class="line">       RegisterUserSite customized-users</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
+<p>第十行就是答案。</p>
+<h2 id="检查用户配置文件"><a href="#检查用户配置文件" class="headerlink" title="检查用户配置文件"></a>检查用户配置文件</h2><p>建立Sites文件夹之后，检查一下 /etc/apache2/users/ 下面是否有user.conf这个文件，应该会有的，如果没有就自己建一个，我的这个文件内容如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;Directory &quot;/Users/abel/Sites/&quot;&gt;</span><br><span class="line">	Options Indexes MultiViews</span><br><span class="line">	Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
+<p>需要把abel替换为你的用户名user。</p>
+<h2 id="修改apache配置文件"><a href="#修改apache配置文件" class="headerlink" title="修改apache配置文件"></a>修改apache配置文件</h2><p>接着修改/etc/apache2/httpd.conf，找到以下代码行并去掉句首的#使代码行生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># LoadModule authz_core_module libexec/apache2/mod_authz_core.so</span><br><span class="line"># LoadModule authz_host_module libexec/apache2/mod_authz_host.so</span><br><span class="line"># LoadModule userdir_module libexec/apache2/mod_userdir.so</span><br><span class="line"># Include /private/etc/apache2/extra/httpd-userdir.conf</span><br></pre></td></tr></table></figure>
+<p>其次，修改/etc/apache2/extra/httpd-userdir.conf，找到以下代码行并去掉句首的#使代码行生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># Include /private/etc/apache2/users/*.conf</span><br></pre></td></tr></table></figure>
+<h2 id="重启apache"><a href="#重启apache" class="headerlink" title="重启apache"></a>重启apache</h2><p>在Sites里创建一个测试文件index.html，内容随意，重启apache</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apachectl restart</span><br></pre></td></tr></table></figure>
+<p>Sites下需要有日记文件目录log，否则apache重启可能会失败且不会有错误提示。重启apache后访问 <a href="http://loaclhost/~user/" target="_blank" rel="noopener">http://loaclhost/~user/</a> 就可以看到刚才的index.html 页面了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mac/" rel="tag"><i class="fa fa-tag"></i> Mac</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/26/My-Blog/" rel="next" title="我的博客诞生日记">
+                <i class="fa fa-chevron-left"></i> 我的博客诞生日记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/19/Hello-Rene/" rel="prev" title="奶茶？！">
+                奶茶？！ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/123.png"
+                alt="Docle" />
+            
+              <p class="site-author-name" itemprop="name">Docle</p>
+              <p class="site-description motion-element" itemprop="description">岁月曲折 我将忠诚</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Docle" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/Docle7" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://limbowandering.github.io" title="火山灿灿" target="_blank">火山灿灿</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.ibilidi.cn/" title="南溪" target="_blank">南溪</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://diygod.me" title="DIYgod" target="_blank">DIYgod</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Sites目录"><span class="nav-number">1.</span> <span class="nav-text">创建Sites目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查用户配置文件"><span class="nav-number">2.</span> <span class="nav-text">检查用户配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改apache配置文件"><span class="nav-number">3.</span> <span class="nav-text">修改apache配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启apache"><span class="nav-number">4.</span> <span class="nav-text">重启apache</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Docle</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
