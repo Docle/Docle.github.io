@@ -87,10 +87,13 @@
 <meta property="og:site_name" content="Docle&#39;s blog">
 <meta property="og:description" content="前言半年前搭建起自己的博客的时候还是一个小萌新，那时候只是单纯的想要有一个自己的博客，对于这个博客的许多细节都没有详细的考虑。这次趁着每年大扫除的时候也把自己的博客整理了一下，希望以后博客可以更整洁，尽管没什么人会看到，也希望有缘能看到我博客的朋友能有个好心情。 博客资源管理">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/02/02/Something-about-hexo/p1.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/02/02/Something-about-hexo/p2.png">
 <meta property="og:updated_time" content="2018-02-03T05:36:37.666Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo的那些小事">
 <meta name="twitter:description" content="前言半年前搭建起自己的博客的时候还是一个小萌新，那时候只是单纯的想要有一个自己的博客，对于这个博客的许多细节都没有详细的考虑。这次趁着每年大扫除的时候也把自己的博客整理了一下，希望以后博客可以更整洁，尽管没什么人会看到，也希望有缘能看到我博客的朋友能有个好心情。 博客资源管理">
+<meta name="twitter:image" content="http://yoursite.com/2018/02/02/Something-about-hexo/p1.jpg">
 
 
 
@@ -322,7 +325,7 @@
       
 
       
-        
+        <img src="/2018/02/02/Something-about-hexo/p1.jpg">
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>半年前搭建起自己的博客的时候还是一个小萌新，那时候只是单纯的想要有一个自己的博客，对于这个博客的许多细节都没有详细的考虑。这次趁着每年大扫除的时候也把自己的博客整理了一下，希望以后博客可以更整洁，尽管没什么人会看到，也希望有缘能看到我博客的朋友能有个好心情。</p>
 <h2 id="博客资源管理"><a href="#博客资源管理" class="headerlink" title="博客资源管理"></a>博客资源管理</h2><a id="more"></a>
 <blockquote>
@@ -354,7 +357,7 @@
 <h3 id="修改文章底部的-标签"><a href="#修改文章底部的-标签" class="headerlink" title="修改文章底部的#标签"></a>修改文章底部的#标签</h3><p>打开 <code>themes/next/layout/_macro/post.swig</code> 文件,搜索 <code>rel=&quot;tag&quot;&gt;#</code> ,将 <code>#</code> 换成 <code>&lt;i class=&quot;fa fa-tag&quot;&gt;&lt;/i&gt;</code>。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;post-tags&quot;&gt;</span><br><span class="line">    &#123;% for tag in post.tags %&#125;</span><br><span class="line">       &lt;a href=&quot;&#123;&#123; url_for(tag.path) &#125;&#125;&quot; rel=&quot;tag&quot;&gt;&lt;i class=&quot;fa fa-tag&quot;&gt;&lt;/i&gt; &#123;&#123; tag.name &#125;&#125;&lt;/a&gt;</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
 <p>修改后效果：</p>
-
+<img src="/2018/02/02/Something-about-hexo/p2.png">
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>博客建立的这半年里也水了有十来篇文章，虽然大多是对一些小问题的记录，希望今后也能继续坚持更新，当然也希望能写出有更高水平的文章。同时这次整理也再次提醒了自己官方文档的重要性，在使用 Hexo 的这半年里其实遇到了不少问题，例如文章资源的管理问题。这些问题只要认真看一下官方文档就能找到很好的解决方法，甚至一开始就不会出现这些问题。说明文档很重要！说明文档很重要！说明文档很重要！重要的事情说三遍。</p>
 
       
