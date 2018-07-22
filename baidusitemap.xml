@@ -4,6 +4,27 @@
 
     
   <url>
+    <loc>https://docle.github.io/2018/07/07/Dying-To-Survive/</loc>
+    <lastmod>2018-07-22T09:38:17.744Z</lastmod>
+    <data>
+        <display>
+        <title>我不是药神</title>
+        <pubTime>2018-07-06T16:00:00.000Z</pubTime>
+        
+        <tag>Movie</tag>
+         
+         
+           
+             
+              <breadCrumb title="Sharing" url="https://docle.github.io/categories/Sharing/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
     <loc>https://docle.github.io/2017/11/05/Using-flask-to-publish-server-to-web-API/</loc>
     <lastmod>2018-07-11T15:51:31.461Z</lastmod>
     <data>
@@ -177,9 +198,9 @@
         <title>基于模型的值迭代算法</title>
         <pubTime>2017-10-26T16:00:00.000Z</pubTime>
         
-        <tag>AI</tag>
-         
         <tag>Python</tag>
+         
+        <tag>AI</tag>
          
          
            
@@ -199,9 +220,9 @@
         <title>基于模型的策略迭代算法</title>
         <pubTime>2017-10-27T16:00:00.000Z</pubTime>
         
-        <tag>AI</tag>
-         
         <tag>Python</tag>
+         
+        <tag>AI</tag>
          
          
            
@@ -241,9 +262,9 @@
         <title>人工智能学习之倒排索引</title>
         <pubTime>2017-11-13T16:00:00.000Z</pubTime>
         
-        <tag>AI</tag>
-         
         <tag>Python</tag>
+         
+        <tag>AI</tag>
          
         <tag>Inverted Index</tag>
          
@@ -404,27 +425,6 @@
     </data>
     </url>
 
-    
-  <url>
-    <loc>https://docle.github.io/2018/07/07/Dying-To-Survive/</loc>
-    <lastmod>2018-07-11T15:42:55.229Z</lastmod>
-    <data>
-        <display>
-        <title>我不是药神</title>
-        <pubTime>2018-07-06T16:00:00.000Z</pubTime>
-        
-        <tag>Movie</tag>
-         
-         
-           
-             
-              <breadCrumb title="Sharing" url="https://docle.github.io/categories/Sharing/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
     
     
     
