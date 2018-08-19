@@ -283,6 +283,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://docle.github.io/2017/11/14/Inverted-index-for-artificial-intelligence-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/14/Inverted-index-for-artificial-intelligence-learning/" itemprop="url">人工智能学习之倒排索引</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-14T00:00:00+08:00">
+                2017-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Note/" itemprop="url" rel="index">
+                    <span itemprop="name">Note</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h2><p><strong>倒排索引</strong>（英语：Inverted index），也常被称为<strong>反向索引</strong>、<strong>置入档案</strong>或<strong>反向档案</strong>，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。</p>
+<ul>
+<li>反向索引数据结构是典型的搜索引擎检索算法重要的部分。</li>
+<li>一个<a href="https://zh.wikipedia.org/w/index.php?title=%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%89%A7%E8%A1%8C&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">搜索引擎执行</a>的目标就是<a href="https://zh.wikipedia.org/wiki/%E4%BC%98%E5%8C%96" target="_blank" rel="noopener">优化</a>查询的速度：找到某个单词在文档中出现的地方。以前，<a href="https://zh.wikipedia.org/w/index.php?title=%E6%AD%A3%E5%90%91%E7%B4%A2%E5%BC%95&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">正向索引</a>开发出来用来存储每个文档的单词的列表，接着掉头来开发了一种反向索引。 正向索引的查询往往满足每个文档有序频繁的<a href="https://zh.wikipedia.org/w/index.php?title=%E5%85%A8%E6%96%87%E6%9F%A5%E8%AF%A2&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">全文查询</a>和每个单词在<a href="https://zh.wikipedia.org/w/index.php?title=%E6%A0%A1%E9%AA%8C%E6%96%87%E6%A1%A3&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">校验文档</a>中的<a href="https://zh.wikipedia.org/wiki/%E9%A9%97%E8%AD%89" target="_blank" rel="noopener">验证</a>这样的查询。</li>
+<li>实际上，时间、<a href="https://zh.wikipedia.org/wiki/%E5%86%85%E5%AD%98" target="_blank" rel="noopener">内存</a>、<a href="https://zh.wikipedia.org/wiki/%E5%A4%84%E7%90%86%E5%99%A8" target="_blank" rel="noopener">处理器</a>等等资源的限制，技术上正向索引是不能实现的。</li>
+<li>为了替代正向索引的每个文档的单词列表，能列出每个查询的单词所有所在文档的列表的反向索引数据结构开发了出来。</li>
+<li>随着反向索引的创建，如今的查询能通过立即的单词标示迅速获取结果（经过<a href="https://zh.wikipedia.org/w/index.php?title=%E9%9A%8F%E6%9C%BA%E5%AD%98%E5%82%A8&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">随机存储</a>）。随机存储也通常被认为快于<a href="https://zh.wikipedia.org/w/index.php?title=%E9%A1%BA%E5%BA%8F%E5%AD%98%E5%82%A8&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">顺序存储</a>。</li>
+</ul>
+<p>（引自维基百科）</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/14/Inverted-index-for-artificial-intelligence-learning/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://docle.github.io/2017/11/11/Compile-and-run-the-Java-program-in-Sublime-Text-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1417,153 +1571,6 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/08/19/Hello-Rene/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://docle.github.io/2017/08/19/Interesting-Python/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Docle">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/123.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Docle の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/19/Interesting-Python/" itemprop="url">Interesting Python</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-19T00:00:00+08:00">
-                2017-08-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Note/" itemprop="url" rel="index">
-                    <span itemprop="name">Note</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前曾经因为课程原因学了一段时间 Python，上个月开始实习，重拾这门语言。这次不再是看一些入门教程浅尝则止，有了些新的体会。以下仅记录下这一个月的学习中遇到的一些有趣的点及小小的感悟。</p>
-<h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p>当我们带着其他面向对象语言的经验进入 Python 的世界，或许会注意到 len(collection) 而不是 collection.len() 的写法。《流畅的 Python》中提到，“当你进一步理解这种不适感背后的原因之后，会发现这个原因，和它所代表的庞大的设计思想，是形成我们通常说的 “Python 风格”(Pythonic) 的关键。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/19/Interesting-Python/" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
