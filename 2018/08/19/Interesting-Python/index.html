@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="Docle の Blog">
 <meta property="og:description" content="前言之前曾经因为课程原因学了一段时间 Python，上个月开始实习，重拾这门语言。这次不再是看一些入门教程浅尝则止，有了些新的体会。以下仅记录下这一个月的学习中遇到的一些有趣的点及小小的感悟。 一致性当我们带着其他面向对象语言的经验进入 Python 的世界，或许会注意到 len(collection) 而不是 collection.len() 的写法。《流畅的 Python》中提到，“当你进一步">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-19T14:48:23.972Z">
+<meta property="og:updated_time" content="2018-08-26T03:22:28.622Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Interesting Python">
 <meta name="twitter:description" content="前言之前曾经因为课程原因学了一段时间 Python，上个月开始实习，重拾这门语言。这次不再是看一些入门教程浅尝则止，有了些新的体会。以下仅记录下这一个月的学习中遇到的一些有趣的点及小小的感悟。 一致性当我们带着其他面向对象语言的经验进入 Python 的世界，或许会注意到 len(collection) 而不是 collection.len() 的写法。《流畅的 Python》中提到，“当你进一步">
@@ -376,7 +376,7 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前曾经因为课程原因学了一段时间 Python，上个月开始实习，重拾这门语言。这次不再是看一些入门教程浅尝则止，有了些新的体会。以下仅记录下这一个月的学习中遇到的一些有趣的点及小小的感悟。</p>
 <h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p>当我们带着其他面向对象语言的经验进入 Python 的世界，或许会注意到 len(collection) 而不是 collection.len() 的写法。《流畅的 Python》中提到，“当你进一步理解这种不适感背后的原因之后，会发现这个原因，和它所代表的庞大的设计思想，是形成我们通常说的 “Python 风格”(Pythonic) 的关键。</p>
 <a id="more"></a>
-<p>在这之前，先来了解一下 Python 的特殊函数（这些特殊函数的名字以两个下划线开头，以两个下划线结尾）。特殊函数的存在是为了被 Python 解释器调用的，你自己并不需要调用它们。也就是说没有 my_object.<strong>len</strong>() 这种写法，而应该使用 len(my_object)。在执行 len(my_object) 的时候，如果 my_object 是一个自定义类的对象，那么 Python 会自己去调用其中由你实现的 <strong>len</strong> 方法。</p>
+<p>在这之前，先来了解一下 Python 的特殊函数（这些特殊函数的名字以两个下划线开头，以两个下划线结尾）。特殊函数的存在是为了被 Python 解释器调用的，你自己并不需要调用它们。也就是说没有 my_object.<strong>len</strong>() 这种写法，而应该使用 len(my_object)。在执行 len(my_object) 的时候，如果 my_object 是一个自定义类的对象，那么 Python 会自己去调用其中由你实现的 __len__ 方法。</p>
 <p>简单的说，通过实现特殊方法，自定义数据类型可以表现的跟内置类型一样。作为你的类的用户，他们不必去记住标准操作的各式名称。</p>
 <h2 id="列表推导"><a href="#列表推导" class="headerlink" title="列表推导"></a>列表推导</h2><p>列表推导是构建列表（list）的快捷方式。</p>
 <p>eg. 把一个字符串变成 Unicode 码位的列表。</p>
@@ -431,6 +431,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/26/Why-Numbering-Should-Start-At-Zero/" rel="prev" title="Why Numbering Should Start At Zero">
+                Why Numbering Should Start At Zero <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -511,7 +515,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -522,7 +526,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -533,7 +537,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

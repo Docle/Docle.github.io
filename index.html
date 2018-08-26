@@ -283,6 +283,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://docle.github.io/2018/08/26/Why-Numbering-Should-Start-At-Zero/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/26/Why-Numbering-Should-Start-At-Zero/" itemprop="url">Why Numbering Should Start At Zero</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-26T00:00:00+08:00">
+                2018-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Carrying/" itemprop="url" rel="index">
+                    <span itemprop="name">Carrying</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在我们平时接触使用的大多数编程语言中，编号都是从 0 开始。我们默认接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。</p>
+<p>原文链接：<a href="http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html" target="_blank" rel="noopener">http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html</a></p>
+<h2 id="译文"><a href="#译文" class="headerlink" title="译文"></a>译文</h2><p>为了不使用有害的三点（…）表示一个自然数的子序列 2, 3, …, 12，我们有四个惯例：</p>
+<p>a) 2 ≤ i &lt; 13</p>
+<p>b) 1 &lt; i ≤ 12</p>
+<p>c) 2 ≤ i ≤ 12</p>
+<p>d) 1 ≤ i ≤ 13</p>
+<p>是否有理由让我们更喜欢其中的一个惯例呢？Yes。观察可得 a) 和 b) 有一个优点：上下边界的差等于子序列的长度。也就是说，在这两个惯例中，两个相邻的子序列意味着其中一个子序列的上界等于另一个子序列的下界。尽管这些观察是有效的，他们并不能让我们在 a) 和 b ) 之间做出选择。所以，让我们重头再来吧。</p>
+<p>这里有一个最小自然数的问题。如果像 b) 和 d) 中那样不包含下界，将使得一个从最小自然数开始的子序列的下界进入了非自然数的范围。That is ugly。因此，对于下界我们更喜欢 a) 和 c) 中的 ≤ 。现在来考虑一个从最小自然数开始的子序列：当这个序列收缩到空序列时，包含上界会使得上界显得不自然。Ugly。所以对于上界我们更喜欢 a) 和 c) 中的 &lt; 。综上所述，惯例 a) 是首选。</p>
+<p><u>Remark</u> Xerox PARC 开发的编程语言 Mesa 对于四种惯例中的整数间隔都有特殊符号。Mesa 丰富的经验表明使用其他三种约定一直是笨拙和错误的根源。由于这些经验 Mesa 程序员现在强烈建议不要使用后三个惯例。之所以提到这个实验证据的原因是，一些人对尚未在实践中得到确证的结论感到不安。（End of Remark.）</p>
+<p>​                                                   *                          *</p>
+<p>​                                                                  *</p>
+<p>在处理一个长度为 N 的序列的时候，我们希望通过下标来辨别其中的元素。下一个令人烦恼的问题是要分配给其起始元素的下标值。使用 a) 的范围表示，当开始下标为 1 的时候，下标的范围是 1 ≤ i &lt; N+1。然而，从 0 开始的话，可以得到更好的范围 0 ≤ i &lt; N。所以，让我们的序数从零开始：在一个序列中，一个元素的序数（下标）等于在它之前的元素的数量。而且这也遵循了几个世纪以来，零作为最自然的数字的传统。</p>
+<p><u>Remark</u> 许多编程语言的设计都没有对此细节给予足够的重视。在 FORTRAN 中下标总是从 1 开始；ALGOL 60 和 PASCAL 采用了惯例 c)；最近的 SASL已经回归 FORTRAN 惯例：SASL 中的序列同时时正整数的函数。Pity！（End of Remark.）</p>
+<p>​                                                   *                          *</p>
+<p>​                                                                  *</p>
+<p>以上的论点是由最近的一个插曲而引出来的。当时，我的一位大学数学系同事（不是计算机科学家），在一次情绪爆发中指责一些年轻的计算机科学家 ”卖弄学术“。因为他们根据习惯而从零开始编号。他认为是故意采用这个（最明智的）惯例作为一种挑衅。（当然，“以 … 结尾”的惯例也被视为挑衅。但这个约定是有用的：我知道一个学生因为默认情况认为问题会在第一页底部结束而差点没有通过考试。）Antony Jay 说的对：“和其他宗教团体一样，异端者必须被清除。不是因为他们很可能错了，而是因为他们可能是对的。“</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://docle.github.io/2018/08/19/Interesting-Python/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1617,155 +1775,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://docle.github.io/2017/12/13/Bitextor/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Docle">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/123.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Docle の Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/13/Bitextor/" itemprop="url">从零开始的Centos安装使用Bitextor</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-13T00:00:00+08:00">
-                2017-12-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Note/" itemprop="url" rel="index">
-                    <span itemprop="name">Note</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>这里使用的是腾讯云最低配置的服务器。服务器是新的CentOS 7.3 64位系统只有python环境。</p>
-<p>根据官方文档说明，Bitextor的requirements如下：</p>
-<p>Autotools are necessary for building and installing the project. Tools javac and jar are needed for building Java dependences, and the virtual machine of Java is needed for running them. In addition, a c++ compiler is requeired for compiling. Most of the scripts in bitextor are written in Python. Because of this, it is necessary to also install Python 2. All these tools are available in most Unix-based operative systems repositories.</p>
-<h2 id="安装开发者工具包"><a href="#安装开发者工具包" class="headerlink" title="安装开发者工具包"></a>安装开发者工具包</h2>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/12/13/Bitextor/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1820,7 +1829,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1831,7 +1840,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1842,7 +1851,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
