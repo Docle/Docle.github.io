@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="前言在我们平时接触使用的大多数编程语言中，编号都是从 0 开始。我们默认接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。 原文链接：http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html 译文为了不">
+<meta name="description" content="前言在我们平时接触使用的大多数编程语言中，编号都是从 0 开始的。我们接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。 原文链接：http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html 译文为了不使">
 <meta name="keywords" content="Numbering">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Why Numbering Should Start At Zero">
 <meta property="og:url" content="https://docle.github.io/2018/08/26/Why-Numbering-Should-Start-At-Zero/index.html">
 <meta property="og:site_name" content="Docle の Blog">
-<meta property="og:description" content="前言在我们平时接触使用的大多数编程语言中，编号都是从 0 开始。我们默认接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。 原文链接：http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html 译文为了不">
+<meta property="og:description" content="前言在我们平时接触使用的大多数编程语言中，编号都是从 0 开始的。我们接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。 原文链接：http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html 译文为了不使">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-26T11:52:48.677Z">
+<meta property="og:updated_time" content="2018-08-26T11:58:01.237Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Why Numbering Should Start At Zero">
-<meta name="twitter:description" content="前言在我们平时接触使用的大多数编程语言中，编号都是从 0 开始。我们默认接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。 原文链接：http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html 译文为了不">
+<meta name="twitter:description" content="前言在我们平时接触使用的大多数编程语言中，编号都是从 0 开始的。我们接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。 原文链接：http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html 译文为了不使">
 
 
 
@@ -373,14 +373,14 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在我们平时接触使用的大多数编程语言中，编号都是从 0 开始。我们默认接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在我们平时接触使用的大多数编程语言中，编号都是从 0 开始的。我们接受这是一个惯例，很少有人会去想为什么会从 0 开始？如果这是惯例，为什么不是其他的惯例呢？Edsger W. Dijkstra 的这个小笔记也许可以解开我们的疑惑。</p>
 <p>原文链接：<a href="http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html" target="_blank" rel="noopener">http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html</a></p>
 <h2 id="译文"><a href="#译文" class="headerlink" title="译文"></a>译文</h2><p>为了不使用有害的三点（…）表示一个自然数的子序列 2, 3, …, 12，我们有四个惯例：</p>
 <p>a) 2 ≤ i &lt; 13</p>
 <p>b) 1 &lt; i ≤ 12</p>
 <p>c) 2 ≤ i ≤ 12</p>
 <p>d) 1 ≤ i ≤ 13</p>
-<p>是否有理由让我们更喜欢其中的一个惯例呢？Yes。观察可得 a) 和 b) 有一个优点：上下边界的差等于子序列的长度。也就是说，在这两个惯例中，两个相邻的子序列意味着其中一个子序列的上界等于另一个子序列的下界。尽管这些观察是有效的，他们并不能让我们在 a) 和 b ) 之间做出选择。所以，让我们重头再来吧。</p>
+<p>是否有理由让我们更喜欢其中的一个惯例呢？Yes。<a id="more"></a>观察可得 a) 和 b) 有一个优点：上下边界的差等于子序列的长度。也就是说，在这两个惯例中，两个相邻的子序列意味着其中一个子序列的上界等于另一个子序列的下界。尽管这些观察是有效的，他们并不能让我们在 a) 和 b ) 之间做出选择。所以，让我们重头再来吧。</p>
 <p>这里有一个最小自然数的问题。如果像 b) 和 d) 中那样不包含下界，将使得一个从最小自然数开始的子序列的下界进入了非自然数的范围。That is ugly。因此，对于下界我们更喜欢 a) 和 c) 中的 ≤ 。现在来考虑一个从最小自然数开始的子序列：当这个序列收缩到空序列时，包含上界会使得上界显得不自然。Ugly。所以对于上界我们更喜欢 a) 和 c) 中的 &lt; 。综上所述，惯例 a) 是首选。</p>
 <p><u>Remark</u> Xerox PARC 开发的编程语言 Mesa 对于四种惯例中的整数间隔都有特殊符号。Mesa 丰富的经验表明使用其他三种约定一直是笨拙和错误的根源。由于这些经验 Mesa 程序员现在强烈建议不要使用后三个惯例。之所以提到这个实验证据的原因是，一些人对尚未在实践中得到确证的结论感到不安。（End of Remark.）</p>
 <p>​                                                   *                          *</p>
