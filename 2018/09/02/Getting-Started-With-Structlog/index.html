@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="rkmNvhiHiI4Sr3xVJaLDijdXnpmkY_8BZZBuaR_SLd4" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,Structlog," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Why 更简单的日志：不再是散乱的记录而是以发生在上下文中的事件为依据。 数据绑定：在 structlog 中 log 记录其实是字典，所以可以绑定和重绑定键值对到你的 loggers 中。 强大的管道功能：提供简单而且强大的数据处理能力。 格式化：本地开发时的键值对形式高亮显示；容易解析的 JSON 格式；或者其他的一些格式。 输出：内置高亮打印；与标准库灵活结合；无需格式化为 string。">
+<meta name="keywords" content="Python,Structlog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Getting Started With Structlog">
+<meta property="og:url" content="https://docle.github.io/2018/09/02/Getting-Started-With-Structlog/index.html">
+<meta property="og:site_name" content="Docle の Blog">
+<meta property="og:description" content="Why 更简单的日志：不再是散乱的记录而是以发生在上下文中的事件为依据。 数据绑定：在 structlog 中 log 记录其实是字典，所以可以绑定和重绑定键值对到你的 loggers 中。 强大的管道功能：提供简单而且强大的数据处理能力。 格式化：本地开发时的键值对形式高亮显示；容易解析的 JSON 格式；或者其他的一些格式。 输出：内置高亮打印；与标准库灵活结合；无需格式化为 string。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-02T15:14:01.658Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Getting Started With Structlog">
+<meta name="twitter:description" content="Why 更简单的日志：不再是散乱的记录而是以发生在上下文中的事件为依据。 数据绑定：在 structlog 中 log 记录其实是字典，所以可以绑定和重绑定键值对到你的 loggers 中。 强大的管道功能：提供简单而且强大的数据处理能力。 格式化：本地开发时的键值对形式高亮显示；容易解析的 JSON 格式；或者其他的一些格式。 输出：内置高亮打印；与标准库灵活结合；无需格式化为 string。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://docle.github.io/2018/09/02/Getting-Started-With-Structlog/"/>
+
+
+
+
+
+  <title>Getting Started With Structlog | Docle の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-115515500-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Docle の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">--但行前路 无问西东--</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-足迹">
+          <a href="/footprint/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paw"></i> <br />
+            
+            足迹
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://docle.github.io/2018/09/02/Getting-Started-With-Structlog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Getting Started With Structlog</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-02T00:00:00+08:00">
+                2018-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Note/" itemprop="url" rel="index">
+                    <span itemprop="name">Note</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h2><ul>
+<li>更简单的日志：不再是散乱的记录而是以发生在上下文中的事件为依据。</li>
+<li>数据绑定：在 structlog 中 log 记录其实是字典，所以可以绑定和重绑定键值对到你的 loggers 中。</li>
+<li>强大的管道功能：提供简单而且强大的数据处理能力。</li>
+<li>格式化：本地开发时的键值对形式高亮显示；容易解析的 JSON 格式；或者其他的一些格式。</li>
+<li>输出：内置高亮打印；与标准库灵活结合；无需格式化为 string。</li>
+</ul>
+<a id="more"></a>
+<h2 id="Installation"><a href="#Installation" class="headerlink" title="Installation"></a>Installation</h2><p>可以通过 pip 命令快速地安装 structlog:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install structlog</span><br></pre></td></tr></table></figure>
+<p>如果想要获得彩色的输出效果，使用以下命令安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install structlog colorama</span><br></pre></td></tr></table></figure>
+<h2 id="First-Log-Entry"><a href="#First-Log-Entry" class="headerlink" title="First Log Entry"></a>First Log Entry</h2><p>一个最简单的用例如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> structlog</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>log = structlog.get_logger()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>log.msg(<span class="string">"greeted"</span>, whom=<span class="string">"world"</span>, more_than_a_string=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])  </span><br><span class="line"><span class="number">2016</span><span class="number">-09</span><span class="number">-17</span> <span class="number">10</span>:<span class="number">13.45</span> greeted                        more_than_a_string=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] whom=<span class="string">'world'</span></span><br></pre></td></tr></table></figure>
+<p>上述例子可以充分展现 structlog 的优点：</p>
+<ul>
+<li>输出是标准化的，而不是直接抛出到用户面前。</li>
+<li>所有的 keyword 都使用了 <a href="http://www.structlog.org/en/stable/api.html#structlog.dev.ConsoleRenderer" target="_blank" rel="noopener"><code>structlog.dev.ConsoleRenderer</code></a> 格式化。反之，使用 <a href="https://docs.python.org/2/reference/datamodel.html#object.__repr__" target="_blank" rel="noopener">repr()</a> 去把所有的 value 序列化成 strings。因此，很容易给日志添加对自定义对象的支持。</li>
+</ul>
+<h2 id="Building-a-Context"><a href="#Building-a-Context" class="headerlink" title="Building a Context"></a>Building a Context</h2><p>假设有一个 web 应用想要使用上面的 API 打印出相关的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> structlog <span class="keyword">import</span> get_logger</span><br><span class="line"></span><br><span class="line">log = get_logger()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">view</span><span class="params">(request)</span>:</span></span><br><span class="line">    user_agent = request.get(<span class="string">"HTTP_USER_AGENT"</span>, <span class="string">"UNKNOWN"</span>)</span><br><span class="line">    peer_ip = request.client_addr</span><br><span class="line">    <span class="keyword">if</span> something:</span><br><span class="line">        log.msg(<span class="string">"something"</span>, user_agent=user_agent, peer_ip=peer_ip)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"something"</span></span><br><span class="line">    <span class="keyword">elif</span> something_else:</span><br><span class="line">        log.msg(<span class="string">"something_else"</span>, user_agent=user_agent, peer_ip=peer_ip)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"something_else"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log.msg(<span class="string">"else"</span>, user_agent=user_agent, peer_ip=peer_ip)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"else"</span></span><br></pre></td></tr></table></figure>
+<p>这些调用本身是漂亮而且直至目的的，但是每一次调用都在写重复的代码（参数 user_agent, peer_ip）。为了减少重复代码，你可能想到如下的闭包：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">log_closure</span><span class="params">(event)</span>:</span></span><br><span class="line">   log.msg(event, user_agent=user_agent, peer_ip=peer_ip)</span><br></pre></td></tr></table></figure>
+<p>在 view() 中添加了该函数后问题是否解决了呢？如果参数是逐步增加的呢？你又是否真的想要在你的每一个 view() 中都包含一个闭包？</p>
+<p>structlog 提供了一个更好的方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> structlog <span class="keyword">import</span> get_logger</span><br><span class="line"></span><br><span class="line">logger = get_logger()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">view</span><span class="params">(request)</span>:</span></span><br><span class="line">    log = logger.bind(</span><br><span class="line">        user_agent=request.get(<span class="string">"HTTP_USER_AGENT"</span>, <span class="string">"UNKNOWN"</span>),</span><br><span class="line">        peer_ip=request.client_addr,</span><br><span class="line">    )</span><br><span class="line">    foo = request.get(<span class="string">"foo"</span>)</span><br><span class="line">    <span class="keyword">if</span> foo:</span><br><span class="line">        log = log.bind(foo=foo)</span><br><span class="line">    <span class="keyword">if</span> something:</span><br><span class="line">        log.msg(<span class="string">"something"</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"something"</span></span><br><span class="line">    <span class="keyword">elif</span> something_else:</span><br><span class="line">        log.msg(<span class="string">"something_else"</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"something_else"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log.msg(<span class="string">"else"</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"else"</span></span><br></pre></td></tr></table></figure>
+<p>对 structlog 来说，一条 log 记录就是一个称为 event dict[ionary] 的字典：</p>
+<ul>
+<li>你可以预建这个字典的一部分。这些预先保存的 value 称为 context。</li>
+<li>在打印一个 event 时，它会与 context 合并然后打印出。</li>
+<li>如果你不喜欢预建 context 的概念，不去使用就可以了。基础的键值对 logging 也足够的方便。</li>
+<li>推荐的使用值绑定（binding values）方式：为每一个新的 context 创建一个新的 logger。</li>
+</ul>
+<h2 id="Manipulating-Log-Entries-in-Flight"><a href="#Manipulating-Log-Entries-in-Flight" class="headerlink" title="Manipulating Log Entries in Flight"></a>Manipulating Log Entries in Flight</h2><p>由于在 structlog 中 log event 是字典，比起简单的 string 也更容易操作。</p>
+<p>structlog 中有 <a href="http://www.structlog.org/en/stable/processors.html" target="_blank" rel="noopener">processor chains</a> 的概念。一个 processor 就像一个接受 event 字典和两个其他参数然后返回一个新的 event 字典的函数。链（chain）中的下一个 processor 接受这个返回的字典而不是原始的那个字典。</p>
+<p>假如你想要在每个 event dict 中添加一个时间戳。它的 processor 如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> datetime</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">timestamper</span><span class="params">(_, __, event_dict)</span>:</span></span><br><span class="line"><span class="meta">... </span>    event_dict[<span class="string">"time"</span>] = datetime.datetime.now().isoformat()</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">return</span> event_dict</span><br></pre></td></tr></table></figure>
+<p>接下来你需要配置它：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>structlog.configure(processors=[timestamper, structlog.processors.KeyValueRenderer()])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>structlog.get_logger().msg(<span class="string">"hi"</span>)  </span><br><span class="line">event=<span class="string">'hi'</span> time=<span class="string">'2018-01-21T09:37:36.976816'</span></span><br></pre></td></tr></table></figure>
+<h2 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h2><p>和前面章节你注意到的一样，renderer 也是 processor。值得注意的是，你不一定总是要把 event 字典转换为 string。</p>
+<p>假设你想要遵循最佳实践，把 event 字典转换成 JSON。structlog 提供内置的 JSONRenderer：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>structlog.configure(processors=[structlog.processors.JSONRenderer()])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>structlog.get_logger().msg(<span class="string">"hi"</span>)</span><br><span class="line">&#123;<span class="string">"event"</span>: <span class="string">"hi"</span>&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="structlog-and-Standard-Library’s-logging"><a href="#structlog-and-Standard-Library’s-logging" class="headerlink" title="structlog and Standard Library’s logging"></a>structlog and Standard Library’s logging</h2><p>structlog 的应用目的不是打印日志，而是为了包装原本已存在的 loggers 并且添加结构和增量上下文（incremental context building）到其中。所以你可以在任何你喜欢的 logger 中使用 structlog。</p>
+<p>原本已存在的 logger 最典型的例子无疑是标准库的 logging 模块。structlog 也提供了一些工具去使得这个最普遍的例子尽量简单：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> logging</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>logging.basicConfig()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> structlog.stdlib <span class="keyword">import</span> LoggerFactory</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>structlog.configure(logger_factory=LoggerFactory())  </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>log = structlog.get_logger()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>log.warning(<span class="string">"it works!"</span>, difficulty=<span class="string">"easy"</span>)  </span><br><span class="line">WARNING:structlog...:difficulty=<span class="string">'easy'</span> event=<span class="string">'it works!'</span></span><br></pre></td></tr></table></figure>
+<p>换句话说，你告诉 structlog 你将使用标准库 logger factory，然后像之前一样调用 get_logger() 。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/Structlog/" rel="tag"><i class="fa fa-tag"></i> Structlog</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/26/Why-Numbering-Should-Start-At-Zero/" rel="next" title="Why Numbering Should Start At Zero">
+                <i class="fa fa-chevron-left"></i> Why Numbering Should Start At Zero
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/123.png"
+                alt="Docle" />
+            
+              <p class="site-author-name" itemprop="name">Docle</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Docle" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/Docle7" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://limbowandering.github.io" title="火山灿灿" target="_blank">火山灿灿</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.ibilidi.cn/" title="AnthonyAn" target="_blank">AnthonyAn</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://diygod.me" title="DIYgod" target="_blank">DIYgod</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.mythsman.com" title="Myths" target="_blank">Myths</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why"><span class="nav-number">1.</span> <span class="nav-text">Why</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Installation"><span class="nav-number">2.</span> <span class="nav-text">Installation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#First-Log-Entry"><span class="nav-number">3.</span> <span class="nav-text">First Log Entry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Building-a-Context"><span class="nav-number">4.</span> <span class="nav-text">Building a Context</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manipulating-Log-Entries-in-Flight"><span class="nav-number">5.</span> <span class="nav-text">Manipulating Log Entries in Flight</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rendering"><span class="nav-number">6.</span> <span class="nav-text">Rendering</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#structlog-and-Standard-Library’s-logging"><span class="nav-number">7.</span> <span class="nav-text">structlog and Standard Library’s logging</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Docle</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="/js/src/echarts.min.js"></script>
+  <script type="text/javascript" src="/js/src/china.js"></script>
+</body>
+</html>
