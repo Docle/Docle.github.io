@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://docle.github.io/2018/09/16/Functional-Programming/</loc>
+    
+    <lastmod>2018-09-16T15:17:14.918Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://docle.github.io/2018/09/02/Getting-Started-With-Structlog/</loc>
     
     <lastmod>2018-09-02T15:14:01.658Z</lastmod>

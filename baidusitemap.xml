@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://docle.github.io/2018/09/16/Functional-Programming/</loc>
+    <lastmod>2018-09-16T15:17:14.918Z</lastmod>
+    <data>
+        <display>
+        <title>函数式编程</title>
+        <pubTime>2018-09-15T16:00:00.000Z</pubTime>
+        
+        <tag>Functional Programming</tag>
+         
+         
+           
+             
+              <breadCrumb title="Carrying" url="https://docle.github.io/categories/Carrying/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://docle.github.io/2018/09/02/Getting-Started-With-Structlog/</loc>
     <lastmod>2018-09-02T15:14:01.658Z</lastmod>
     <data>
