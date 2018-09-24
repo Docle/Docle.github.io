@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="Docle の Blog">
 <meta property="og:description" content="Introduction编程语言支持用几个不同的方式分解问题：  大部分编程语言是程式的（procedural）：程序是告诉计算机如何处理程序输入的指令列表。C，Pascal，甚至 Unix Shells 都是程式语言。 在声明性（declarative）语言中，你编写一个要解决的问题的规范，语言实现指出如何高效地完成计算。SQL 可能是你最熟悉的声明性语言。SQL 查询语句描述了你要查询的数据集">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-16T15:17:14.918Z">
+<meta property="og:updated_time" content="2018-09-16T15:20:18.021Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="函数式编程">
 <meta name="twitter:description" content="Introduction编程语言支持用几个不同的方式分解问题：  大部分编程语言是程式的（procedural）：程序是告诉计算机如何处理程序输入的指令列表。C，Pascal，甚至 Unix Shells 都是程式语言。 在声明性（declarative）语言中，你编写一个要解决的问题的规范，语言实现指出如何高效地完成计算。SQL 可能是你最熟悉的声明性语言。SQL 查询语句描述了你要查询的数据集">
@@ -398,8 +398,7 @@
 <p>函数式编程避免赋值的发生是因为它难以处理赋值；赋值可以在赋值打破为真的常量，而不产生任何新的可以继续传播的常量。</p>
 <p>不幸的是，证明程序正确在很大程度上是不切实际的，无关 Pythno 软件。即便是很小的程序也需要几页纸长的证明；一个中等复杂度的程序的正确性证明工作量是巨大的，你日常使用的程序（Python 解析器，XML 页面，web浏览器）很少或者说没有一个能够被证明为正确的。即使你写下或者生成一个证明，也会有验证证明的问题；可能其中有一个错误，而你错误地认为你已经证明了程序的正确性。</p>
 <h2 id="Modularity"><a href="#Modularity" class="headerlink" title="Modularity"></a>Modularity</h2><p>函数式编程的一个更实际的好处是它迫使你把问题分解为小块。因此程序更加模块化。比起一个执行复杂转换的大函数，指定、编写一个只做一件事的小函数更加容易。小函数也更容易阅读和检查错误。</p>
-<p>##Ease of debugging and testing</p>
-<p>测试和调试函数式风格的程序更容易。</p>
+<h2 id="Ease-of-debugging-and-testing"><a href="#Ease-of-debugging-and-testing" class="headerlink" title="Ease of debugging and testing"></a>Ease of debugging and testing</h2><p>测试和调试函数式风格的程序更容易。</p>
 <p>调试简单是因为函数通常很小而且分工明确。当程序中断时，每一个函数都是一个入口，你可以检查其中的数据是否正确。你可以查看中间输入和输出来快速判断出导致程序错误的函数。</p>
 <p>测试更加容易因为每一个函数都是潜在的单元测试项目。函数不依赖于在进行测试前需要复制的系统状态；相反，你只需要合成正确的输入然后检查输出符合预期。</p>
 <h2 id="Composability"><a href="#Composability" class="headerlink" title="Composability"></a>Composability</h2><p> 处理函数式风格的程序，你会编写许多具有不同输入和输出的函数。其中的一些函数不可避免的专门用于特定的应用，但其他的在很多各种程序中都有用。例如，一个接受一个文件路径并返回文件中所有 XML 文件的函数，或者一个接受一个文件名并返回它的内容的函数，能被应用到许多不同的场景。</p>
@@ -443,6 +442,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/24/Functional-Programming-HOWTO/" rel="prev" title="Python 中的 Iterator">
+                Python 中的 Iterator <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -523,7 +526,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -534,7 +537,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -620,7 +623,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Formal-provability"><span class="nav-number">2.</span> <span class="nav-text">Formal provability</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Modularity"><span class="nav-number">3.</span> <span class="nav-text">Modularity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Composability"><span class="nav-number">4.</span> <span class="nav-text">Composability</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Formal-provability"><span class="nav-number">2.</span> <span class="nav-text">Formal provability</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Modularity"><span class="nav-number">3.</span> <span class="nav-text">Modularity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ease-of-debugging-and-testing"><span class="nav-number">4.</span> <span class="nav-text">Ease of debugging and testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Composability"><span class="nav-number">5.</span> <span class="nav-text">Composability</span></a></li></ol></div>
             
 
           </div>
