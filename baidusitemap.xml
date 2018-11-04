@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://docle.github.io/2018/11/04/Relative-immutability-of-tuples%20/</loc>
+    <lastmod>2018-11-04T13:18:46.442Z</lastmod>
+    <data>
+        <display>
+        <title>Python 元组的相对不可变性</title>
+        <pubTime>2018-11-03T16:00:00.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+         
+           
+             
+              <breadCrumb title="Note" url="https://docle.github.io/categories/Note/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://docle.github.io/2018/09/24/Functional-Programming-HOWTO/</loc>
     <lastmod>2018-09-24T13:01:01.644Z</lastmod>
     <data>
