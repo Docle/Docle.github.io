@@ -70,7 +70,7 @@
 
 
 
-  <meta name="keywords" content="Python," />
+  <meta name="keywords" content="Python,Tuple," />
 
 
 
@@ -82,7 +82,7 @@
 
 
 <meta name="description" content="一个关于 += 的谜题Leonardo Rochael 在 2013 年的 Python 巴西会议上提到了这个谜题： 12&amp;gt;&amp;gt;&amp;gt; t = (1, 2, [30, 40])&amp;gt;&amp;gt;&amp;gt; t[2] += [50, 60] 以上两个表达式到底会发生下面 4 种情况下的哪一种？  t 变成 (1, 2, [30, 40, 50, 60])。 因为 tuple 不支持对它的元素">
-<meta name="keywords" content="Python">
+<meta name="keywords" content="Python,Tuple">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python 元组的相对不可变性">
 <meta property="og:url" content="https://docle.github.io/2018/11/04/Relative-immutability-of-tuples /index.html">
@@ -90,7 +90,7 @@
 <meta property="og:description" content="一个关于 += 的谜题Leonardo Rochael 在 2013 年的 Python 巴西会议上提到了这个谜题： 12&amp;gt;&amp;gt;&amp;gt; t = (1, 2, [30, 40])&amp;gt;&amp;gt;&amp;gt; t[2] += [50, 60] 以上两个表达式到底会发生下面 4 种情况下的哪一种？  t 变成 (1, 2, [30, 40, 50, 60])。 因为 tuple 不支持对它的元素">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://docle.github.io/2018/11/04/Relative-immutability-of-tuples%20/IMG_20181104_152905.jpg">
-<meta property="og:updated_time" content="2018-11-04T13:18:46.442Z">
+<meta property="og:updated_time" content="2018-11-04T13:23:12.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python 元组的相对不可变性">
 <meta name="twitter:description" content="一个关于 += 的谜题Leonardo Rochael 在 2013 年的 Python 巴西会议上提到了这个谜题： 12&amp;gt;&amp;gt;&amp;gt; t = (1, 2, [30, 40])&amp;gt;&amp;gt;&amp;gt; t[2] += [50, 60] 以上两个表达式到底会发生下面 4 种情况下的哪一种？  t 变成 (1, 2, [30, 40, 50, 60])。 因为 tuple 不支持对它的元素">
@@ -382,7 +382,7 @@
 <li>t 变成 (1, 2, [30, 40, 50, 60])。</li>
 <li>因为 tuple 不支持对它的元素赋值，所以会抛出 TypeError 异常。</li>
 <li>以上两个都不是。</li>
-<li>1 和 2 都是对的。</li>
+<li>1 和 2 都是对的。<a id="more"></a></li>
 </ol>
 <p>刚看到这个问题的时候很多人可能会选择 2，但其实答案是 4。我们用控制台运行这段代码得到下面的结果：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>t = (<span class="number">1</span>, <span class="number">2</span>, [<span class="number">30</span>, <span class="number">40</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t[<span class="number">2</span>] += [<span class="number">50</span>, <span class="number">60</span>]</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">TypeError: <span class="string">'tuple'</span> object does <span class="keyword">not</span> support item assignment</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t</span><br><span class="line">(<span class="number">1</span>, <span class="number">2</span>, [<span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>, <span class="number">60</span>])</span><br></pre></td></tr></table></figure>
@@ -422,6 +422,8 @@
         <div class="post-tags">
           
             <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/Tuple/" rel="tag"><i class="fa fa-tag"></i> Tuple</a>
           
         </div>
       
@@ -545,7 +547,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
