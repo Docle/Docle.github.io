@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="rkmNvhiHiI4Sr3xVJaLDijdXnpmkY_8BZZBuaR_SLd4" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Flask,TensorFlow,Keras," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="作者: Himanshu Rawlan链接: https://towardsdatascience.com/deploying-keras-models-using-tensorflow-serving-and-flask-508ba00f1037来源: Towards Data Science   通常，我们需要抽象出机械学习模型细节，并将其部署或集成到到易于使用的 API 中。例如：我们可以">
+<meta name="keywords" content="Flask,TensorFlow,Keras">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 TensorFlow Serving 和 Flask 部署 Keras 模型">
+<meta property="og:url" content="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/index.html">
+<meta property="og:site_name" content="Docle の Blog">
+<meta property="og:description" content="作者: Himanshu Rawlan链接: https://towardsdatascience.com/deploying-keras-models-using-tensorflow-serving-and-flask-508ba00f1037来源: Towards Data Science   通常，我们需要抽象出机械学习模型细节，并将其部署或集成到到易于使用的 API 中。例如：我们可以">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_FCvoR3ffHysD6lDRzRUYSw.png">
+<meta property="og:image" content="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_mdVoukO08uhHpmdVeQnTAg.png">
+<meta property="og:image" content="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_mHePtJJbR2TUtM6sYZNdzA.jpeg">
+<meta property="og:image" content="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_QdmZRkMjxlv13CJLEE7EjA.png">
+<meta property="og:updated_time" content="2019-04-07T02:30:14.095Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 TensorFlow Serving 和 Flask 部署 Keras 模型">
+<meta name="twitter:description" content="作者: Himanshu Rawlan链接: https://towardsdatascience.com/deploying-keras-models-using-tensorflow-serving-and-flask-508ba00f1037来源: Towards Data Science   通常，我们需要抽象出机械学习模型细节，并将其部署或集成到到易于使用的 API 中。例如：我们可以">
+<meta name="twitter:image" content="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_FCvoR3ffHysD6lDRzRUYSw.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/"/>
+
+
+
+
+
+  <title>使用 TensorFlow Serving 和 Flask 部署 Keras 模型 | Docle の Blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-115515500-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Docle の Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">--但行前路 无问西东--</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-足迹">
+          <a href="/footprint/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paw"></i> <br />
+            
+            足迹
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Docle">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/123.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Docle の Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">使用 TensorFlow Serving 和 Flask 部署 Keras 模型</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-06T00:00:00+08:00">
+                2019-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Carrying/" itemprop="url" rel="index">
+                    <span itemprop="name">Carrying</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>作者: Himanshu Rawlan<br>链接: <a href="https://towardsdatascience.com/deploying-keras-models-using-tensorflow-serving-and-flask-508ba00f1037" target="_blank" rel="noopener">https://towardsdatascience.com/deploying-keras-models-using-tensorflow-serving-and-flask-508ba00f1037</a><br>来源: Towards Data Science</p>
+</blockquote>
+<img src="/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_FCvoR3ffHysD6lDRzRUYSw.png">
+<p>通常，我们需要抽象出机械学习模型细节，并将其部署或集成到到易于使用的 API 中。例如：我们可以提供一个 URl 地址，其他人可以向它发送一个 POST 请求然后得到模型预测结果的 JSON 响应，而不必关心技术细节。</p>
+<p>在本教程中，我们会创建一个 TensorFlow Serving 服务来部署我们在 Keras 中构建的 <code>InceptionV3</code>  图像分类卷积神经网络（CNN）。接着我们会创建一个简单的 Flask 服务来接受 POST 请求和执行 Tensorflow serving 服务所需的一些图像预处理，并返回一个 JSON 响应。</p>
+<a id="more"></a>
+<h3 id="什么是-TensorFlow-Serving？"><a href="#什么是-TensorFlow-Serving？" class="headerlink" title="什么是 TensorFlow Serving？"></a>什么是 TensorFlow Serving？</h3><p>Serving（服务） 是你训练机械学习模型后应用它的方式。</p>
+<img src="/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_mdVoukO08uhHpmdVeQnTAg.png">
+<p>TensorFlow Serving 是的把模型应用于生产的过程更容易、更快。它允许你安全地部署新的模型并进行实验，同时保持相同的服务器体系结构和 API。开箱即用，它提供与 TensorFlow 的集成，但可以扩展为其他类型的模型。</p>
+<h3 id="安装-TensorFlow-Serving"><a href="#安装-TensorFlow-Serving" class="headerlink" title="安装 TensorFlow Serving"></a>安装 TensorFlow Serving</h3><p>前提：请创建一个 python 虚拟环境并在其中安装带有 TensorFlow 后端的 Keras。在<a href="https://keras.io/#installation" target="_blank" rel="noopener">这里</a>阅读更多。</p>
+<p>注意：本教程的所有命令都是在 Ubuntu 18.04.1 LTS 的 python 虚拟环境中执行的。</p>
+<p>现在，在同样的虚拟环境中运行以下命令（使用 <code>sudo</code> 获取 root 权限）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ apt install curl</span><br><span class="line"></span><br><span class="line">$ echo &quot;deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal&quot; | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list &amp;&amp; curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -</span><br><span class="line"></span><br><span class="line">$ apt-get update</span><br><span class="line"></span><br><span class="line">$ apt-get install tensorflow-model-server</span><br><span class="line"></span><br><span class="line">$ tensorflow_model_server --version</span><br><span class="line">TensorFlow ModelServer: 1.10.0-dev</span><br><span class="line">TensorFlow Library: 1.11.0</span><br><span class="line"></span><br><span class="line">$ python  --version</span><br><span class="line">Python 3.6.6</span><br></pre></td></tr></table></figure>
+<p>你可以使用下面的命令升级到更新版本的 <code>tensorflow-model-server</code> ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get upgrade tensorflow-model-server</span><br></pre></td></tr></table></figure>
+<h3 id="我们将要构建的目录"><a href="#我们将要构建的目录" class="headerlink" title="我们将要构建的目录"></a>我们将要构建的目录</h3><p>在开始之前了解目录结构有助于我们清楚的了解每个步骤所在的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">(tensorflow) ubuntu@Himanshu:~/Desktop/Medium/keras-and-tensorflow-serving$ tree -c</span><br><span class="line">└── keras-and-tensorflow-serving</span><br><span class="line">    ├── README.md</span><br><span class="line">    ├── my_image_classifier</span><br><span class="line">    │   └── 1</span><br><span class="line">    │       ├── saved_model.pb</span><br><span class="line">    │       └── variables</span><br><span class="line">    │           ├── variables.data-00000-of-00001</span><br><span class="line">    │           └── variables.index</span><br><span class="line">    ├── test_images</span><br><span class="line">    │   ├── car.jpg</span><br><span class="line">    │   └── car.png</span><br><span class="line">    ├── flask_server</span><br><span class="line">    │   ├── app.py</span><br><span class="line">    │   ├── flask_sample_request.py</span><br><span class="line">    └── scripts</span><br><span class="line">        ├── download_inceptionv3_model.py</span><br><span class="line">        ├── inception.h5</span><br><span class="line">        ├── auto_cmd.py</span><br><span class="line">        ├── export_saved_model.py</span><br><span class="line">        ├── imagenet_class_index.json</span><br><span class="line">        └── serving_sample_request.py</span><br><span class="line">6 directories, 15 files</span><br></pre></td></tr></table></figure>
+<p>可以从下面的 GitHub 仓库获取所有的文件：</p>
+<p><a href="https://github.com/himanshurawlani/keras-and-tensorflow-serving" target="_blank" rel="noopener"><strong>himanshurawlani/keras-and-tensorflow-serving</strong><br><em>Deploying Keras models using TensorFlow Serving and Flask — himanshurawlani/keras-and-tensorflow-serving</em>github.com</a></p>
+<h3 id="导出-Tensorflow-Serving-使用的-Keras-model"><a href="#导出-Tensorflow-Serving-使用的-Keras-model" class="headerlink" title="导出 Tensorflow Serving 使用的 Keras model"></a>导出 Tensorflow Serving 使用的 Keras model</h3><p>本教程中，我们将使用 <code>download_inceptionv3_model.py</code> 脚本下载并安装 Keras 中具有 Imagenet 权重的 <code>InceptionV3</code> 卷积神经网络（CNN）。你可以在 <code>keras.applications</code> 库 (<a href="https://github.com/keras-team/keras-applications" target="_blank" rel="noopener">here</a>) 下载提供的其他任何模型，或者如果你已经在 Keras 构建了你自己的模型，则可以跳过这一步。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.applications.inception_v3 <span class="keyword">import</span> InceptionV3</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Input</span><br><span class="line"></span><br><span class="line">inception_model = InceptionV3(weights=<span class="string">'imagenet'</span>, input_tensor=Input(shape=(<span class="number">224</span>, <span class="number">224</span>, <span class="number">3</span>)))</span><br><span class="line">inception_model.save(<span class="string">'inception.h5'</span>)</span><br></pre></td></tr></table></figure>
+<p>执行上面的脚本你应该得到以下输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ python download_inceptionv3_model.py</span><br><span class="line">Using TensorFlow backend.</span><br><span class="line">Downloading data from https://github.com/fchollet/deep-learning-models/releases/download/v0.5/inception_v3_weights_tf_dim_ordering_tf_kernels.h5</span><br><span class="line">96116736/96112376 [==============================] - 161s 2us/step</span><br></pre></td></tr></table></figure>
+<p>现在我们的 <code>InceptionV3</code> CNN（<code>inception.h5</code>）以 Keras 格式保存。我们希望以 TensorFlow server 可以处理的格式导出模型。执行  <code>export_saved_model.py</code>  脚本完成此操作。</p>
+<p>TensorFlow 提供 <code>SavedModel</code> 格式作为导出模型的标准格式。在底层的实现中，Keras 模型完全根据 TensorFlow 对象指定，因此我们可以使用 Tensorflow 方法将其导出。TensorFlow 提供了一个方便的函数 <code>tf.saved_model.simple_save()</code> ，它抽象了一些细节并且适用于大多数用例。</p>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python export_saved_model.py</span><br><span class="line">WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.</span><br></pre></td></tr></table></figure>
+<p>出现该警告是因为我们下载了一个预先训练过的模型。我们可以使用这个模型进行推理，但如果想要进一步训练它，则需要在下载它之后执行 <code>compile()</code> 函数。现在我们忽略这个警告也无妨。执行该脚本（<code>export_saved_model.py</code>）后，一下文件会保存在 <code>my_image_classifier</code> 目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── my_image_classifier</span><br><span class="line">   └── 1</span><br><span class="line">       ├── saved_model.pb</span><br><span class="line">       └── variables</span><br><span class="line">           ├── variables.data-00000-of-00001</span><br><span class="line">           └── variables.index</span><br><span class="line">2 directories, 3 files</span><br></pre></td></tr></table></figure>
+<p>假设我们希望在将来更新我们的模型（也因为我们收集了更多的训练数据并在更新了的数据集上训练了模型），我们可以这样做：</p>
+<ol>
+<li>在新的 keras 模型上运行相同的脚本。</li>
+<li>在 <code>export_saved_model.py</code> 中更新 <code>export_path = ‘../my_image_classifier/1’</code> 为 <code>export_path = ‘../my_image_classifier/2’</code>。</li>
+</ol>
+<p>TensorFlow Serving 会自动检测出 <code>my_image_classifier</code> 目录下模型的新版本，并在服务器中更新它。</p>
+<h3 id="启动-TensorFlow-Serving-服务"><a href="#启动-TensorFlow-Serving-服务" class="headerlink" title="启动 TensorFlow Serving 服务"></a>启动 TensorFlow Serving 服务</h3><p>执行以下命令在本地启动 TensorFlow Serving 服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ tensorflow_model_server --model_base_path=/home/ubuntu/Desktop/Medium/keras-and-tensorflow-serving/my_image_classifier --rest_api_port=9000 --model_name=ImageClassifier</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>--model_base_path</code>： 必须是绝对路径，否则会报错：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Failed to start server. Error: Invalid argument: Expected model ImageClassifier to have an absolute path or URI; got base_path()=./my_image_classifier</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>--rest_api_port</code>：TensorFlow Serving 会在 8500 端口启动一个 gRPC ModelServer，并且 RESET API 可在 9000 端口调用。</li>
+<li><code>--model_name</code>：这是你用于发送 POST 请求的服务器的名称。你可以输入任何名称。</li>
+</ul>
+<h3 id="测试-TensorFlow-Serving-服务"><a href="#测试-TensorFlow-Serving-服务" class="headerlink" title="测试 TensorFlow Serving 服务"></a>测试 TensorFlow Serving 服务</h3><img src="/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_mHePtJJbR2TUtM6sYZNdzA.jpeg" title="From raw data to production models">
+<p>脚本 <code>serving_sample_request.py</code> 向 TensorFlow Serving 服务发送一个 POST 请求。输入图片通过命令行参数传递。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> keras.applications <span class="keyword">import</span> inception_v3</span><br><span class="line"><span class="keyword">from</span> keras.preprocessing <span class="keyword">import</span> image</span><br><span class="line"></span><br><span class="line"><span class="comment"># Argument parser for giving input image_path from command line</span></span><br><span class="line">ap = argparse.ArgumentParser()</span><br><span class="line">ap.add_argument(<span class="string">"-i"</span>, <span class="string">"--image"</span>, required=<span class="keyword">True</span>,</span><br><span class="line">                help=<span class="string">"path of the image"</span>)</span><br><span class="line">args = vars(ap.parse_args())</span><br><span class="line"></span><br><span class="line">image_path = args[<span class="string">'image'</span>]</span><br><span class="line"><span class="comment"># Preprocessing our input image</span></span><br><span class="line">img = image.img_to_array(image.load_img(image_path, target_size=(<span class="number">224</span>, <span class="number">224</span>))) / <span class="number">255.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># this line is added because of a bug in tf_serving(1.10.0-dev)</span></span><br><span class="line">img = img.astype(<span class="string">'float16'</span>)</span><br><span class="line"></span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">"instances"</span>: [&#123;<span class="string">'input_image'</span>: img.tolist()&#125;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># sending post request to TensorFlow Serving server</span></span><br><span class="line">r = requests.post(<span class="string">'http://localhost:9000/v1/models/ImageClassifier:predict'</span>, json=payload)</span><br><span class="line">pred = json.loads(r.content.decode(<span class="string">'utf-8'</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Decoding the response</span></span><br><span class="line"><span class="comment"># decode_predictions(preds, top=5) by default gives top 5 results</span></span><br><span class="line"><span class="comment"># You can pass "top=10" to get top 10 predicitons</span></span><br><span class="line">print(json.dumps(inception_v3.decode_predictions(np.array(pred[<span class="string">'predictions'</span>]))[<span class="number">0</span>]))</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ python serving_sample_request.py -i ../test_images/car.png</span><br><span class="line">Using TensorFlow backend.</span><br><span class="line">[[&quot;n04285008&quot;, &quot;sports_car&quot;, 0.998414], [&quot;n04037443&quot;, &quot;racer&quot;, 0.00140099], [&quot;n03459775&quot;, &quot;grille&quot;, 0.000160794], [&quot;n02974003&quot;, &quot;car_wheel&quot;, 9.57862e-06], [&quot;n03100240&quot;, &quot;convertible&quot;, 6.01581e-06]]</span><br></pre></td></tr></table></figure>
+<p>与后续调用相比，TensorFlow Serving 服务响应第一次请求的时间略长。</p>
+<h3 id="为什么需要-Flask-服务"><a href="#为什么需要-Flask-服务" class="headerlink" title="为什么需要 Flask 服务"></a>为什么需要 Flask 服务</h3><p>如你所见，我们已经在 <code>serving_sample_request.py</code> （前端调用者）执行了一些图像预处理步骤。以下是在 TensorFlow serving 服务层之上创建 Flask 服务的原因：</p>
+<ul>
+<li>当我们向前端团队提供 API 时，我们需要确保他们不被预处理的技术细节淹没。</li>
+<li>我们可能并不总是有 Python 后段服务器（比如：node.js 服务器），因此使用 numpy 和 keras 库进行预处理可能会很麻烦。</li>
+<li>如果我们打算提供多个模型，那么我们不得不创建多个 TensorFlow Serving 服务并且在前端代码添加新的 URL。但 Flask 服务会保持域 URL 相同，而我们只需要添加一个新的路由（一个函数）。</li>
+<li>可以在 Flask 应用中执行基于订阅的访问、异常处理和其他任务。</li>
+</ul>
+<p>我们要做的是消除 TensorFlow Serving 服务和前端的紧耦合。</p>
+<img src="/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/1_QdmZRkMjxlv13CJLEE7EjA.png" title="Multiple TensorFlow Serving servers hidden behind a Flask server">
+<p>在本教程，我们将在同一台机器上和与 TensorFlow Serving 相同的虚拟环境中创建一个 Flask 服务，并使用已安装的库。理想情况下，两者（TensorFlow Serving 服务、Flask 服务）应该在不同的机器上运行，因为更多的请求会导致 Flask 服务器因执行图像预处理而变慢。此外，如果请求数量非常高，单个 Flask 可能无法满足需求。如果有多个前端调用者，我们可能还需要一个排队系统。尽管如此，我们可以使用这个方法开发一个令人满意的概念试验。</p>
+<h3 id="创建一个-Flask-服务"><a href="#创建一个-Flask-服务" class="headerlink" title="创建一个 Flask 服务"></a>创建一个 Flask 服务</h3><p>前提：在 python 虚拟环境中<a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank" rel="noopener">安装 Flask</a>。</p>
+<p>创建我们的 Flask 服务只需要一个 <code>app.py</code> 文件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> BytesIO</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, jsonify</span><br><span class="line"><span class="keyword">from</span> keras.applications <span class="keyword">import</span> inception_v3</span><br><span class="line"><span class="keyword">from</span> keras.preprocessing <span class="keyword">import</span> image</span><br><span class="line"></span><br><span class="line"><span class="comment"># from flask_cors import CORS</span></span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment this line if you are making a Cross domain request</span></span><br><span class="line"><span class="comment"># CORS(app)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Testing URL</span></span><br><span class="line"><span class="meta">@app.route('/hello/', methods=['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello, World!'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/imageclassifier/predict/', methods=['POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">image_classifier</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># Decoding and pre-processing base64 image</span></span><br><span class="line">    img = image.img_to_array(image.load_img(BytesIO(base64.b64decode(request.form[<span class="string">'b64'</span>])),</span><br><span class="line">                                            target_size=(<span class="number">224</span>, <span class="number">224</span>))) / <span class="number">255.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># this line is added because of a bug in tf_serving(1.10.0-dev)</span></span><br><span class="line">    img = img.astype(<span class="string">'float16'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Creating payload for TensorFlow serving request</span></span><br><span class="line">    payload = &#123;</span><br><span class="line">        <span class="string">"instances"</span>: [&#123;<span class="string">'input_image'</span>: img.tolist()&#125;]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Making POST request</span></span><br><span class="line">    r = requests.post(<span class="string">'http://localhost:9000/v1/models/ImageClassifier:predict'</span>, json=payload)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Decoding results from TensorFlow Serving server</span></span><br><span class="line">    pred = json.loads(r.content.decode(<span class="string">'utf-8'</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Returning JSON response to the frontend</span></span><br><span class="line">    <span class="keyword">return</span> jsonify(inception_v3.decode_predictions(np.array(pred[<span class="string">'predictions'</span>]))[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p>切换工作目录到 <code>app.py</code> 所在的目录，运行以下命令启动 Flask 服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ export FLASK_ENV=development &amp;&amp; flask run --host=0.0.0.0</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>FLASK_ENV=development</code>：启用调试模式，它基本上向你提供完整的错误日志。不要在生产环境中使用它。</li>
+<li><code>flask run</code> 命令自动执行当前目录下的 <code>app.py</code> 文件。</li>
+<li><code>--host=0.0.0.0</code>：这允许你从其他机器向 Flask 服务发起请求。要从其他机器发起请求，你必须指定运行 Falsk 服务的机器的 <strong>IP 地址</strong>来代替 <code>localhost</code>。</li>
+</ul>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)</span><br><span class="line">* Restarting with stat</span><br><span class="line">* Debugger is active!</span><br><span class="line">* Debugger PIN: 1xx-xxx-xx4</span><br><span class="line">Using TensorFlow backend.</span><br></pre></td></tr></table></figure>
+<p>使用和之前一样的命令启动 TensorFlow Serving 服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ tensorflow_model_server --model_base_path=/home/ubuntu/Desktop/Medium/keras-and-tensorflow-serving/my_image_classifier --rest_api_port=9000 --model_name=ImageClassifier</span><br></pre></td></tr></table></figure>
+<p><code>auto_cmd.py</code> 是一个用于自动启动和停止这两个服务（TensorFlow Serving 和 Falsk）的脚本。你可以修改这个脚本适用两个以上的服务。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"></span><br><span class="line"><span class="comment"># Making sure to use virtual environment libraries</span></span><br><span class="line">activate_this = <span class="string">"/home/ubuntu/tensorflow/bin/activate_this.py"</span></span><br><span class="line">exec(open(activate_this).read(), dict(__file__=activate_this))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Change directory to where your Flask's app.py is present</span></span><br><span class="line">os.chdir(<span class="string">"/home/ubuntu/Desktop/Medium/keras-and-tensorflow-serving/flask_server"</span>)</span><br><span class="line">tf_ic_server = <span class="string">""</span></span><br><span class="line">flask_server = <span class="string">""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    tf_ic_server = subprocess.Popen([<span class="string">"tensorflow_model_server "</span></span><br><span class="line">                                     <span class="string">"--model_base_path=/home/ubuntu/Desktop/Medium/keras-and-tensorflow-serving/my_image_classifier "</span></span><br><span class="line">                                     <span class="string">"--rest_api_port=9000 --model_name=ImageClassifier"</span>],</span><br><span class="line">                                    stdout=subprocess.DEVNULL,</span><br><span class="line">                                    shell=<span class="keyword">True</span>,</span><br><span class="line">                                    preexec_fn=os.setsid)</span><br><span class="line">    print(<span class="string">"Started TensorFlow Serving ImageClassifier server!"</span>)</span><br><span class="line"></span><br><span class="line">    flask_server = subprocess.Popen([<span class="string">"export FLASK_ENV=development &amp;&amp; flask run --host=0.0.0.0"</span>],</span><br><span class="line">                                    stdout=subprocess.DEVNULL,</span><br><span class="line">                                    shell=<span class="keyword">True</span>,</span><br><span class="line">                                    preexec_fn=os.setsid)</span><br><span class="line">    print(<span class="string">"Started Flask server!"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        print(<span class="string">"Type 'exit' and press 'enter' OR press CTRL+C to quit: "</span>)</span><br><span class="line">        in_str = input().strip().lower()</span><br><span class="line">        <span class="keyword">if</span> in_str == <span class="string">'q'</span> <span class="keyword">or</span> in_str == <span class="string">'exit'</span>:</span><br><span class="line">            print(<span class="string">'Shutting down all servers...'</span>)</span><br><span class="line">            os.killpg(os.getpgid(tf_ic_server.pid), signal.SIGTERM)</span><br><span class="line">            os.killpg(os.getpgid(flask_server.pid), signal.SIGTERM)</span><br><span class="line">            print(<span class="string">'Servers successfully shutdown!'</span>)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">    print(<span class="string">'Shutting down all servers...'</span>)</span><br><span class="line">    os.killpg(os.getpgid(tf_ic_server.pid), signal.SIGTERM)</span><br><span class="line">    os.killpg(os.getpgid(flask_server.pid), signal.SIGTERM)</span><br><span class="line">    print(<span class="string">'Servers successfully shutdown!'</span>)</span><br></pre></td></tr></table></figure>
+<p>记得修改第 10 行中的路径使其指向你的 <code>app.py</code> 所在目录。你可能还需要修改第 6 行使其指向你的虚拟环境的 bin。然后，你可以在任何目录下通过终端执行以下命令来执行上面的脚本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python auto_cmd.py</span><br></pre></td></tr></table></figure>
+<h3 id="测试-Falsk-服务和-TensorFlow-Serving-服务"><a href="#测试-Falsk-服务和-TensorFlow-Serving-服务" class="headerlink" title="测试 Falsk 服务和 TensorFlow Serving 服务"></a>测试 Falsk 服务和 TensorFlow Serving 服务</h3><p>我们可以使用 <code>flask_sample_request.py</code> 脚本发起一个简单的请求。该脚本基本上模仿了来自前端的请求：</p>
+<ol>
+<li>获取输入图像，将其编码为 base64 格式，并使用 POST 请求把它发送到 Flask 服务。</li>
+<li>Flask 服务解码该 base64 图像并为 TensorFlow Serving 服务预处理它。</li>
+<li>接着 Flask 服务向 TensorFlow 发送一个 POST 请求并其解码响应内容。</li>
+<li>格式化已解码的响应内容并发送回前端。</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># importing the requests library</span></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="comment"># defining the api-endpoint</span></span><br><span class="line">API_ENDPOINT = <span class="string">"http://localhost:5000/imageclassifier/predict/"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># taking input image via command line</span></span><br><span class="line">ap = argparse.ArgumentParser()</span><br><span class="line">ap.add_argument(<span class="string">"-i"</span>, <span class="string">"--image"</span>, required=<span class="keyword">True</span>,</span><br><span class="line">                help=<span class="string">"path of the image"</span>)</span><br><span class="line">args = vars(ap.parse_args())</span><br><span class="line"></span><br><span class="line">image_path = args[<span class="string">'image'</span>]</span><br><span class="line">b64_image = <span class="string">""</span></span><br><span class="line"><span class="comment"># Encoding the JPG,PNG,etc. image to base64 format</span></span><br><span class="line"><span class="keyword">with</span> open(image_path, <span class="string">"rb"</span>) <span class="keyword">as</span> imageFile:</span><br><span class="line">    b64_image = base64.b64encode(imageFile.read())</span><br><span class="line"></span><br><span class="line"><span class="comment"># data to be sent to api</span></span><br><span class="line">data = &#123;<span class="string">'b64'</span>: b64_image&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># sending post request and saving response as response object</span></span><br><span class="line">r = requests.post(url=API_ENDPOINT, data=data)</span><br><span class="line"></span><br><span class="line"><span class="comment"># extracting the response</span></span><br><span class="line">print(<span class="string">"&#123;&#125;"</span>.format(r.text))</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">$ python flask_sample_request.py -i ../test_images/car.png</span><br><span class="line">[</span><br><span class="line">  [</span><br><span class="line">    &quot;n04285008&quot;, </span><br><span class="line">    &quot;sports_car&quot;, </span><br><span class="line">    0.998414</span><br><span class="line">  ], </span><br><span class="line">  [</span><br><span class="line">    &quot;n04037443&quot;, </span><br><span class="line">    &quot;racer&quot;, </span><br><span class="line">    0.00140099</span><br><span class="line">  ], </span><br><span class="line">  [</span><br><span class="line">    &quot;n03459775&quot;, </span><br><span class="line">    &quot;grille&quot;, </span><br><span class="line">    0.000160794</span><br><span class="line">  ], </span><br><span class="line">  [</span><br><span class="line">    &quot;n02974003&quot;, </span><br><span class="line">    &quot;car_wheel&quot;, </span><br><span class="line">    9.57862e-06</span><br><span class="line">  ], </span><br><span class="line">  [</span><br><span class="line">    &quot;n03100240&quot;, </span><br><span class="line">    &quot;convertible&quot;, </span><br><span class="line">    6.01581e-06</span><br><span class="line">  ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>我们的 Flask 服务现在只有一个路由用于我们的单个 TensorFlow Serving 服务。我们可以在不同或相同的机械上创建多个 TensorFlow Serving 服务，提供多个模型。为此，只需要在文件 <code>app.py</code> 中添加更多的路由（函数）并在其中执行所用模型的特定预处理。我们可以把这些路由提供给前端团队，根据需要调用模型。</p>
+<h3 id="处理跨域-HTTP-请求"><a href="#处理跨域-HTTP-请求" class="headerlink" title="处理跨域 HTTP 请求"></a>处理跨域 HTTP 请求</h3><p>考虑使用 Angular 发起 POST 请求的场景，我们的 Flask 服务收到 OPTIONS header 而不是 POST，因为：</p>
+<ul>
+<li>当 web 应用请求一个不同源（域，协议，端口）的资源时，它会发起一个跨源 HTTP 请求。</li>
+<li>CORS(Cross Origin Resource Sharing)(跨域资源共享)是一种使用附加 HTTP headers 来告诉浏览器，让一个在一个源（域）上运行的 web 应用有权访问一个不同源的服务器上的资源的机制。在<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" target="_blank" rel="noopener">这里</a>了解更多关于 CORS 的信息。</li>
+</ul>
+<p>因此，Angular 不会从 Flask 服务得到任何响应。要解决这个问题，我们需要在 <code>app.py</code> 中启用 Flask-CORS。在<a href="https://flask-cors.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">这里</a>了解更多。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>以上就是部署我们的机械学习模型供使用所需的全部工作。TensorFlow Serving 使得将机械学习集成到网站和其他应用中变得非常容易。由于 keras 提供了丰富的预建模型（<a href="https://github.com/keras-team/keras-applications" target="_blank" rel="noopener">这里</a>），即使只有最少限度的机器学习和深度学习算法知识，也可能开发出超级有用的应用。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Flask/" rel="tag"><i class="fa fa-tag"></i> Flask</a>
+          
+            <a href="/tags/TensorFlow/" rel="tag"><i class="fa fa-tag"></i> TensorFlow</a>
+          
+            <a href="/tags/Keras/" rel="tag"><i class="fa fa-tag"></i> Keras</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/04/Relative-immutability-of-tuples/" rel="next" title="Python 元组的相对不可变性">
+                <i class="fa fa-chevron-left"></i> Python 元组的相对不可变性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/123.png"
+                alt="Docle" />
+            
+              <p class="site-author-name" itemprop="name">Docle</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Docle" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/Docle7" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://limbowandering.github.io" title="火山灿灿" target="_blank">火山灿灿</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.ibilidi.cn/" title="AnthonyAn" target="_blank">AnthonyAn</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://diygod.me" title="DIYgod" target="_blank">DIYgod</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.mythsman.com" title="Myths" target="_blank">Myths</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是-TensorFlow-Serving？"><span class="nav-number">1.</span> <span class="nav-text">什么是 TensorFlow Serving？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-TensorFlow-Serving"><span class="nav-number">2.</span> <span class="nav-text">安装 TensorFlow Serving</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们将要构建的目录"><span class="nav-number">3.</span> <span class="nav-text">我们将要构建的目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出-Tensorflow-Serving-使用的-Keras-model"><span class="nav-number">4.</span> <span class="nav-text">导出 Tensorflow Serving 使用的 Keras model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-TensorFlow-Serving-服务"><span class="nav-number">5.</span> <span class="nav-text">启动 TensorFlow Serving 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试-TensorFlow-Serving-服务"><span class="nav-number">6.</span> <span class="nav-text">测试 TensorFlow Serving 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要-Flask-服务"><span class="nav-number">7.</span> <span class="nav-text">为什么需要 Flask 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个-Flask-服务"><span class="nav-number">8.</span> <span class="nav-text">创建一个 Flask 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试-Falsk-服务和-TensorFlow-Serving-服务"><span class="nav-number">9.</span> <span class="nav-text">测试 Falsk 服务和 TensorFlow Serving 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理跨域-HTTP-请求"><span class="nav-number">10.</span> <span class="nav-text">处理跨域 HTTP 请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结尾"><span class="nav-number">11.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Docle</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="/js/src/echarts.min.js"></script>
+  <script type="text/javascript" src="/js/src/china.js"></script>
+</body>
+</html>

@@ -4,7 +4,31 @@
 
     
   <url>
-    <loc>https://docle.github.io/2018/11/04/Relative-immutability-of-tuples%20/</loc>
+    <loc>https://docle.github.io/2019/04/06/Deploying-keras-models-using-tensorflow-serving-and-flask/</loc>
+    <lastmod>2019-04-07T02:30:14.095Z</lastmod>
+    <data>
+        <display>
+        <title>使用 TensorFlow Serving 和 Flask 部署 Keras 模型</title>
+        <pubTime>2019-04-05T16:00:00.000Z</pubTime>
+        
+        <tag>Flask</tag>
+         
+        <tag>TensorFlow</tag>
+         
+        <tag>Keras</tag>
+         
+         
+           
+             
+              <breadCrumb title="Carrying" url="https://docle.github.io/categories/Carrying/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://docle.github.io/2018/11/04/Relative-immutability-of-tuples/</loc>
     <lastmod>2018-11-04T13:23:12.394Z</lastmod>
     <data>
         <display>
